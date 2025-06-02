@@ -213,31 +213,297 @@
     </div>
 
     <script>
-        const allQuizData = [ // Uzupełnij tę tablicę swoimi pytaniami
-            // Przykładowe pytania dla demonstracji:
-            {
-                question: "Jaki proces geomorfologiczny jest odpowiedzialny za powstawanie dolin U-kształtnych?",
-                options: ["Erozja rzeczna", "Erozja lodowcowa", "Wietrzenie", "Ruchy masowe"],
-                correctAnswer: "Erozja lodowcowa",
-                explanation: "Doliny U-kształtne są charakterystyczne dla obszarów zlodowaconych, gdzie lodowce przekształciły wcześniejsze doliny V-kształtne.",
-                slideReference: "Lodowce, s. 15"
-            },
-            {
-                question: "Co to jest meander?",
-                options: ["Rodzaj wydmy", "Zakole rzeki", "Forma krasowa", "Typ uskoku tektonicznego"],
-                correctAnswer: "Zakole rzeki",
-                explanation: "Meandry to naturalne zakola tworzone przez rzeki płynące po terenie nizinnym.",
-                slideReference: "Rzeki, s. 8"
-            },
-             {
-                question: "Który z wymienionych czynników NIE jest głównym czynnikiem rzeźbotwórczym?",
-                options: ["Woda płynąca", "Lodowce", "Wiatr", "Pole magnetyczne Ziemi"],
-                correctAnswer: "Pole magnetyczne Ziemi",
-                explanation: "Pole magnetyczne Ziemi chroni przed promieniowaniem kosmicznym, ale nie kształtuje bezpośrednio rzeźby terenu w takim stopniu jak pozostałe czynniki.",
-                slideReference: "Wprowadzenie, s. 2"
-            }
-            // ... dodaj więcej pytań, aby pula była wystarczająco duża (np. 100+)
-        ];
+const allQuizData = [ 
+    {
+        question: "Co oznacza pojęcie „ochrona zachowawcza” w kontekście kształtowania krajobrazu?",
+        options: [
+            "Zachowywanie istniejących wartości bez możliwości przekształceń",
+            "Przywrócenie stanu pierwotnego zniszczonego obszaru",
+            "Modernizacja i rewaloryzacja obszarów zdegradowanych",
+            "Biologiczne rekultywacja gleb poeksploatacyjnych"
+        ],
+        correctAnswer: "Zachowywanie istniejących wartości bez możliwości przekształceń",
+        explanation: "Ochrona zachowawcza polega na zachowaniu istniejących wartości krajobrazu i zapobieganiu ich niszczeniu, bez przeprowadzania jakichkolwiek przekształceń.",
+        slideReference: ""
+    },
+    {
+        question: "Jaka forma kształtowania krajobrazu polega na przywróceniu stanu pierwotnego zniszczonego przez działalność człowieka?",
+        options: [
+            "Rewitalizacja",
+            "Rewaloryzacja",
+            "Restytucja",
+            "Pielęgnacja krajobrazu"
+        ],
+        correctAnswer: "Restytucja",
+        explanation: "Restytucja polega na odtworzeniu stanu pierwotnego krajobrazu zniszczonego przez nieracjonalną gospodarkę człowieka.",
+        slideReference: ""
+    },
+    {
+        question: "Co to jest „rekultywacja techniczna”?",
+        options: [
+            "Wytworzenie pokrywy roślinnej poprzez wprowadzenie roślin próchnicotwórczych",
+            "Czynności mechaniczne zmierzające do ukształtowania i stabilizacji form rzeźby terenu",
+            "Modernizacja obszarów miejskich przez przesiedlenia mieszkańców",
+            "Tworzenie pasów wiatrochronnych w celu ochrony przed erozją"
+        ],
+        correctAnswer: "Czynności mechaniczne zmierzające do ukształtowania i stabilizacji form rzeźby terenu",
+        explanation: "Rekultywacja techniczna to mechaniczne prace mające na celu stabilizację form rzeźby terenu na terenach zdegradowanych.",
+        slideReference: ""
+    },
+    {
+        question: "Która z niżej wymienionych form ma na celu ożywienie społeczno-gospodarcze zdegradowanych obszarów?",
+        options: [
+            "Rewaloryzacja",
+            "Rewitalizacja",
+            "Restytucja",
+            "Ochrona zachowawcza"
+        ],
+        correctAnswer: "Rewitalizacja",
+        explanation: "Rewitalizacja polega na ożywieniu społeczno-gospodarczym obszarów poprzez modernizację, przesiedlenia i aktywizację lokalnej społeczności.",
+        slideReference: ""
+    },
+    {
+        question: "Sozologia zajmuje się:",
+        options: [
+            "Badaniem procesów geomorfologicznych",
+            "Odzyskiwaniem terenów poprzemysłowych",
+            "Problemami ochrony zasobów przyrody i trwałości ich użytkowania",
+            "Tworzeniem planów zagospodarowania przestrzennego"
+        ],
+        correctAnswer: "Problemami ochrony zasobów przyrody i trwałości ich użytkowania",
+        explanation: "Sozologia to nauka o ochronie zasobów przyrody i zapewnieniu trwałości ich użytkowania w kontekście gospodarczym i technicznym.",
+        slideReference: ""
+    },
+    {
+        question: "Mapa sozologiczna jednozagadnieniowa analityczna przedstawia:",
+        options: [
+            "Dynamikę i kierunki zmian degradacyjnych",
+            "Stan czynników degradujących środowisko w danym momencie",
+            "Prognostykę degradacyjnych przekształceń powierzchni ziemi",
+            "Zabiegi rekultywacyjne na wskazanym obszarze"
+        ],
+        correctAnswer: "Stan czynników degradujących środowisko w danym momencie",
+        explanation: "Mapa analityczna jednozagadnieniowa przedstawia w określonym momencie stan jednego rodzaju czynników degradujących (np. hydrosozologiczna czy aerosozologiczna).",
+        slideReference: ""
+    },
+    {
+        question: "Do głównych czynników antropopresji NIE należy:",
+        options: [
+            "Turystyka",
+            "Komunikacja",
+            "Przywrócenie stanu pierwotnego terenu",
+            "Przemysł"
+        ],
+        correctAnswer: "Przywrócenie stanu pierwotnego terenu",
+        explanation: "Przywracanie stanu pierwotnego to forma ochrony/restitucji, a nie czynnik antropopresji, która to wszelkie działania człowieka wpływające degradująco na krajobraz.",
+        slideReference: ""
+    },
+    {
+        question: "Co oznacza pojęcie „antropizacja”?",
+        options: [
+            "Bezpośrednia ingerencja człowieka w procesy fizycznogeograficzne",
+            "Efekt wpływu człowieka na krajobraz",
+            "Rekultywacja terenów poprzemysłowych",
+            "Tworzenie form ochrony przyrody"
+        ],
+        correctAnswer: "Efekt wpływu człowieka na krajobraz",
+        explanation: "Antropizacja to proces, w wyniku którego obszar przekształca się pod wpływem działań człowieka, czyli efekt oddziaływania antropopresji.",
+        slideReference: ""
+    },
+    {
+        question: "Który z niżej wymienionych rodzajów antropopresji dotyczy niszczenia pokrywy roślinnej?",
+        options: [
+            "Zmiana stosunków wodnych",
+            "Zabijanie zwierząt",
+            "Niszczenie roślinności",
+            "Emisja hałasu"
+        ],
+        correctAnswer: "Niszczenie roślinności",
+        explanation: "Niszczenie roślinności to bezpośredni rodzaj antropopresji prowadzący do degradacji krajobrazu.",
+        slideReference: ""
+    },
+    {
+        question: "Jaki jest cel ochrony krajobrazu?",
+        options: [
+            "Zwiększenie natężenia antropopresji",
+            "Przywrócenie ilościowych zasobów ropy naftowej",
+            "Powstrzymanie degradacji i przywrócenie krajobrazu do stanu poprzedniego",
+            "Tworzenie nowych form zabudowy miejskiej"
+        ],
+        correctAnswer: "Powstrzymanie degradacji i przywrócenie krajobrazu do stanu poprzedniego",
+        explanation: "Ochrona krajobrazu polega na zatrzymaniu procesów degradacyjnych i dążeniu do przywrócenia krajobrazu do stanu poprzedniego, np. przez oczyszczanie wód czy ochronę gatunków.",
+        slideReference: ""
+    },
+    {
+        question: "Co to jest ekorozwój (rozwój zrównoważony)?",
+        options: [
+            "Rozwój gospodarczy prowadzący do maksymalizacji zysku niezależnie od środowiska",
+            "Rozwój zgodny z potrzebami obecnych pokoleń, nie umniejszający możliwości przyszłych pokoleń",
+            "Przywrócenie stanu pierwotnego terenów zniszczonych",
+            "Tworzenie nowych parków narodowych bez uwzględnienia aspektów społecznych"
+        ],
+        correctAnswer: "Rozwój zgodny z potrzebami obecnych pokoleń, nie umniejszający możliwości przyszłych pokoleń",
+        explanation: "Ekorozwój lub zrównoważony rozwój zakłada, że zaspokajanie potrzeb obecnych pokoleń nie powinno ograniczać możliwości przyszłych pokoleń do zaspokojenia własnych potrzeb.",
+        slideReference: ""
+    },
+    {
+        question: "Która z poniższych zasad ekorozwoju mówi, że sprawca zanieczyszczenia płaci za jego usunięcie?",
+        options: [
+            "Zasada likwidacji zanieczyszczeń u źródła",
+            "Zasada uspołecznienia",
+            "Zasada odpowiedzialności sprawcy",
+            "Zasada regionalizmu"
+        ],
+        correctAnswer: "Zasada odpowiedzialności sprawcy",
+        explanation: "Zasada odpowiedzialności sprawcy nakłada na podmiot zanieczyszczający obowiązek pokrycia kosztów usunięcia lub naprawienia szkody.",
+        slideReference: ""
+    },
+    {
+        question: "Które z narzędzi wdrażania ekorozwoju polega na stosowaniu opłat za ilościową degradację środowiska?",
+        options: [
+            "Subwencje",
+            "Depozyty",
+            "Opłaty eksploatacyjne",
+            "Instrumenty zbywalne"
+        ],
+        correctAnswer: "Opłaty eksploatacyjne",
+        explanation: "Opłaty eksploatacyjne nakłada się za korzystanie ze środowiska i ilościową degradację, np. opłaty za emisję zanieczyszczeń.",
+        slideReference: ""
+    },
+    {
+        question: "Do barier ekorozwoju NIE zalicza się:",
+        options: [
+            "Brak środków finansowych na cele proekologiczne",
+            "Niedostateczny udział społeczeństwa w działaniach proekologicznych",
+            "Skrajnie liberalna polityka rynkowa",
+            "Ograniczenie emisji gazów cieplarnianych"
+        ],
+        correctAnswer: "Ograniczenie emisji gazów cieplarnianych",
+        explanation: "Ograniczenie emisji to działanie proekologiczne, a nie bariera. Bariery to m.in. finansowe, organizacyjne, społeczne czy technologiczne.",
+        slideReference: ""
+    },
+    {
+        question: "Według hierarchii aktów prawa ochrony środowiska, na jakim poziomie znajdują się umowy międzynarodowe?",
+        options: [
+            "Pomiędzy ustawami a rozporządzeniami",
+            "Pomiędzy konstytucją a ustawami",
+            "Pomiędzy ich wykonawczymi aktami a ustawami",
+            "Pomiędzy konstytucją a rozporządzeniami"
+        ],
+        correctAnswer: "Pomiędzy konstytucją a ustawami",
+        explanation: "W hierarchii: Konstytucja RP – Umowy międzynarodowe – Ustawy – Rozporządzenia – Akty prawa miejscowego.",
+        slideReference: ""
+    },
+    {
+        question: "Która z poniższych konwencji dotyczy ochrony ptactwa i obszarów wodno-błotnych?",
+        options: [
+            "Konwencja Berneńska",
+            "Konwencja Ramsarska",
+            "Konwencja z Aarhus",
+            "Konwencja Bolońska"
+        ],
+        correctAnswer: "Konwencja Ramsarska",
+        explanation: "Konwencja Ramsarska dotyczy ochrony ptactwa wodno-błotnego oraz ich siedlisk na całym świecie.",
+        slideReference: ""
+    },
+    {
+        question: "Jakie są podstawowe formy praw ochrony przyrody w Polsce (ustawy)?",
+        options: [
+            "Ustawa o ochronie zabytków oraz ustawa wodna",
+            "Ustawa o ochronie przyrody 1991 oraz prawo ochrony środowiska 2001",
+            "Ustawa o planowaniu przestrzennym oraz ustawa krajobrazowa",
+            "Ustawa o ochronie zwierząt oraz ustawa o inspekcji ochrony środowiska"
+        ],
+        correctAnswer: "Ustawa o ochronie przyrody 1991 oraz prawo ochrony środowiska 2001",
+        explanation: "Podstawowymi aktami są Ustawa o ochronie przyrody (1991) oraz Prawo ochrony środowiska (2001), które regulują zasady ochrony i użytkowania środowiska.",
+        slideReference: ""
+    },
+    {
+        question: "Świadomość ekologiczna opisowo-techniczna obejmuje:",
+        options: [
+            "System wartości moralnych wobec środowiska",
+            "Wyobraźnię ekologiczną i wiedzę ekologiczną",
+            "Postawy ideologiczne zgodne z programami partii ekologicznych",
+            "Standardy prawne dotyczące ochrony środowiska"
+        ],
+        correctAnswer: "Wyobraźnię ekologiczną i wiedzę ekologiczną",
+        explanation: "Opisowo-techniczny wymiar świadomości ekologicznej obejmuje wiedzę o procesach ekologicznych i wyobraźnię ekologiczną (przewidywanie skutków działalności człowieka).",
+        slideReference: ""
+    },
+    {
+        question: "Który z poniższych przykładów wskazuje na brak świadomości ekologicznej?",
+        options: [
+            "Uczestnictwo w akcjach sprzątania lasu",
+            "Wypalanie traw w okresie wegetacyjnym",
+            "Segregowanie odpadów na mokre i suche",
+            "Instalacja filtrów na kominach przemysłowych"
+        ],
+        correctAnswer: "Wypalanie traw w okresie wegetacyjnym",
+        explanation: "Wypalanie traw jest przykładem działań wynikających z braku świadomości ekologicznej, prowadząc do utraty siedlisk i erozji gleby.",
+        slideReference: ""
+    },
+    {
+        question: "Jaką kategorię ochrony przyrody wg IUCN stanowią „parki narodowe lądowe lub morskie”?",
+        options: [
+            "Kategoria I – Rezerwaty ścisłe",
+            "Kategoria II – Parki narodowe",
+            "Kategoria III – Pomniki przyrody",
+            "Kategoria V – Obszary chronionego krajobrazu"
+        ],
+        correctAnswer: "Kategoria II – Parki narodowe",
+        explanation: "W klasyfikacji IUCN Kategoria II obejmuje parki narodowe, zarówno lądowe, jak i morskie.",
+        slideReference: ""
+    },
+    {
+        question: "W którym roku w Polsce uchwalono pierwszą ustawę o ochronie przyrody?",
+        options: [
+            "1934",
+            "1949",
+            "1868",
+            "1991"
+        ],
+        correctAnswer: "1934",
+        explanation: "Pierwszą ustawą o ochronie przyrody w Polsce była ustawa z 1934 roku, która wprowadziła konserwatorski charakter ochrony pojedynczych tworów przyrody.",
+        slideReference: ""
+    },
+    {
+        question: "Które wydarzenie miało miejsce w 1976 roku w kontekście ochrony przyrody w Polsce?",
+        options: [
+            "Utworzenie Suwalskiego Parku Krajobrazowego",
+            "Powstanie Polskiego Klubu Ekologicznego",
+            "Nowelizacja Konstytucji RP z uwzględnieniem ochrony środowiska",
+            "Wprowadzenie obszarów Natura 2000"
+        ],
+        correctAnswer: "Nowelizacja Konstytucji RP z uwzględnieniem ochrony środowiska",
+        explanation: "W 1976 roku w nowelizacji Konstytucji RP uwzględniono dwa przepisy dotyczące ochrony środowiska, wzmacniając prawną pozycję ochrony przyrody.",
+        slideReference: ""
+    },
+    {
+        question: "Co to jest pomnik przyrody?",
+        options: [
+            "Obszar chroniony krajobrazowo o powierzchni co najmniej 100 ha",
+            "Pojedynczy twór przyrody (drzewo, skała, źródło) chroniony ze względu na wartość przyrodniczą lub kulturową",
+            "Park narodowy założony w celu ochrony flory i fauny",
+            "Skansen ekspozycji historycznych obiektów przyrodniczych"
+        ],
+        correctAnswer: "Pojedynczy twór przyrody (drzewo, skała, źródło) chroniony ze względu na wartość przyrodniczą lub kulturową",
+        explanation: "Pomnik przyrody to indywidualny obiekt przyrodniczy o szczególnych walorach, chroniony ustawą, np. unikatowe drzewa czy formacje skalne.",
+        slideReference: ""
+    },
+    {
+        question: "Który z wymienionych elementów NIE jest instrumentem ekonomicznym wdrażania ekorozwoju?",
+        options: [
+            "Opłaty za usługę środowiskową",
+            "Depozyty za opakowania wielokrotnego użytku",
+            "Ulgi podatkowe dla zakładów produkujących odpady",
+            "Kredyty preferencyjne na inwestycje proekologiczne"
+        ],
+        correctAnswer: "Ulgi podatkowe dla zakładów produkujących odpady",
+        explanation: "Ulgi podatkowe mogą być narzędziem ekologicznym, ale „dla zakładów produkujących odpady” nie wspiera ekorozwoju – błędne sformułowanie. Pozostałe odpowiedzi to typowe instrumenty ekonomiczne ekorozwoju.",
+        slideReference: ""
+    }
+];
+
 
         const numQuestionsToDisplay = 2; // Zmień na 20 lub inną preferowaną liczbę
         let currentQuizQuestions = [];
