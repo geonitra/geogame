@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Rozpoznawania Miejsc w Polsce</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+        <div id="quiz-panel">
+            <div class="panel-header">
+                <h1>Znajdź na mapie:</h1>
+                <a href="test-tekstowy.html" id="other-test-link" title="Przejdź do testu tekstowego">Test Tekstowy →</a>
+            </div>
+
+            <div id="dataset-selector">
+                <label for="geojson-select">Wybierz zestaw danych:</label>
+                <select id="geojson-select">
+                    <option value="parki_narodowe.geojson" data-name="Parki Narodowe">Parki Narodowe</option>
+                    <option value="ramsar.geojson" data-name="Obszary Ramsar">Obszary Ramsar</option>
+                    <option value="lkp.geojson" data-name="Leśne Kompleksy Promocyjne">LKP</option>
+                    <!-- Możesz dodać więcej opcji, jeśli potrzebujesz -->
+                </select>
+            </div>
+
+            <div id="place-to-find-cloud">
+                <span id="place-name">Nazwa Miejsca</span>
+            </div>
+
+            <div id="controls">
+                <label for="hard-mode-checkbox">
+                    <input type="checkbox" id="hard-mode-checkbox"> Tryb trudny (margines 10km)
+                </label>
+                <label for="training-mode-checkbox">
+                    <input type="checkbox" id="training-mode-checkbox"> Tryb treningowy (nauka)
+                </label>
+                <button id="start-button">Start</button>
+                <button id="next-place-button" style="display:none; margin-top:10px;">Następne Miejsce</button>
+            </div>
+
+            <div id="score-display" style="display: none;">
+                <h2>Twój wynik:</h2>
+                <p id="score-text"></p>
+                <p id="summary-text"></p>
+            </div>
+
+            <div id="feedback" class="feedback-message"></div>
+            <div id="training-info" style="display:none; text-align: center; margin-top: 15px; color: #555;">
+                Jesteś w trybie treningowym. Punkty nie są liczone.
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    <script src="script.js"></script>
+</body>
+</html>
