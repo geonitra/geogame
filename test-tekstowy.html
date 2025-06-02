@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UwU Geomorfologia</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #eef1f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em; /* Zmniejszono dla lepszego dopasowania */
+        }
+        .question-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #d1d9e6;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            transition: border-color 0.3s ease;
+        }
+        .question-block p.question-text { /* Dodano klasę dla tekstu pytania */
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #34495e;
+            font-size: 1.05em; /* Zmniejszono dla lepszego dopasowania */
+        }
+        .question-block label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            border: 1px solid #e1e5ea;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 0.95em; /* Zmniejszono dla lepszego dopasowania */
+        }
+        .question-block label:hover {
+            background-color: #f0f4f8;
+            border-color: #79a6dc;
+        }
+        .question-block input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.05);
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.05em; /* Zmniejszono */
+            font-weight: 500;
+            margin-top: 30px;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e9f7ef;
+        }
+        #results h3 {
+            color: #16a085;
+            margin-top: 0;
+            font-size: 1.1em; /* Zmniejszono */
+        }
+        #results h4 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.2em; /* Zmniejszono */
+        }
+        .feedback-message {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.9em; /* Zmniejszono */
+        }
+        .correct-answer-feedback { /* Nowa klasa dla poprawnej odpowiedzi */
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect-answer-feedback { /* Nowa klasa dla niepoprawnej odpowiedzi */
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .no-answer-feedback {  /* Nowa klasa dla braku odpowiedzi */
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .explanation {
+            font-style: italic;s
+            font-size: 0.85em; /* Zmniejszono */
+            color: #555;
+            margin-top: 8px;
+            padding-left: 15px;
+            border-left: 3px solid #bdc3c7;
+        }
+        .slide-ref {
+            font-size: 0.75em; /* Zmniejszono */
+            color: #7f8c8d;
+            display: block;
+            text-align: right;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Geomorfologia UwU</h1>
+        <form id="quizForm">
+            <!-- Pytania zostaną wstawione tutaj przez JavaScript -->
+        </form>
+        <button type="button" class="button" onclick="submitQuiz()">Sprawdź odpowiedzi</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const allQuizData = [
+            // PULA PYTAŃ (przykładowe 40, rozbuduj do 100+)
+                {
+        "question": "Które z wymienionych czynników naturalnych są analizowane w geomorfologii w kontekście powstawania, ewolucji i funkcjonowania form terenu?",
+        "options": ["Tylko woda", "Tylko wiatr i lód", "Woda, wiatr, lód", "Tylko działalność człowieka"],
+        "correctAnswer": "Woda, wiatr, lód",
+        "explanation": "Slajd 3 wymienia wodę, wiatr i lód jako czynniki naturalne analizowane w geomorfologii, obok działalności człowieka.",
+        "slideReference": "Slajd 3"
+    },
+    {
+        "question": "Jakie są największe formy wyróżniane na powierzchni Ziemi, określane jako formy planetarne?",
+        "options": ["Góry i doliny", "Kontynenty i obszary oceaniczne", "Wulkany i rowy tektoniczne", "Wyżyny i niziny"],
+        "correctAnswer": "Kontynenty i obszary oceaniczne",
+        "explanation": "Slajd 4 definiuje formy planetarne jako największe formy na powierzchni Ziemi, czyli kontynenty i obszary oceaniczne.",
+        "slideReference": "Slajd 4"
+    },
+    {
+        "question": "Ile procent powierzchni planety zajmują lądy?",
+        "options": ["29%", "37%", "50%", "71%"],
+        "correctAnswer": "29%",
+        "explanation": "Według slajdu 4, lądy zajmują 29% powierzchni planety.",
+        "slideReference": "Slajd 4"
+    },
+    {
+        "question": "Na jakim procencie powierzchni Ziemi występuje wyraźne załamanie krzywej hipsograficznej, określające zasięg bloków kontynentalnych (lądy + płytkie morza przybrzeżne)?",
+        "options": ["29%", "37%", "875 m n.p.m.", "3711 m p.p.m."],
+        "correctAnswer": "37%",
+        "explanation": "Slajd 4 wskazuje, że wyraźne załamanie krzywej hipsograficznej, określające zasięg bloków kontynentalnych, występuje na 37% powierzchni Ziemi.",
+        "slideReference": "Slajd 4"
+    },
+    {
+        "question": "Która skorupa ziemska charakteryzuje się dużą gęstością i jest zbudowana głównie z bazaltu?",
+        "options": ["Skorupa kontynentalna", "Skorupa oceaniczna", "Astenosfera", "Litosfera"],
+        "correctAnswer": "Skorupa oceaniczna",
+        "explanation": "Slajd 5 opisuje skorupę oceaniczną jako mającą dużą gęstość i zbudowaną głównie z bazaltu.",
+        "slideReference": "Slajd 5"
+    },
+    {
+        "question": "Która skorupa ziemska jest lżejsza, ale jednocześnie grubsza i znajduje się pod kontynentami?",
+        "options": ["Skorupa kontynentalna", "Skorupa oceaniczna", "Jądro zewnętrzne", "Płaszcz dolny"],
+        "correctAnswer": "Skorupa kontynentalna",
+        "explanation": "Slajd 5 opisuje skorupę kontynentalną jako dużo lżejszą, ale jednocześnie grubszą, znajdującą się pod kontynentami.",
+        "slideReference": "Slajd 5"
+    },
+    {
+        "question": "Jak nazywa się typ granicy płyt litosfery, gdzie płyty zbliżają się do siebie, co może prowadzić do subdukcji lub kolizji?",
+        "options": ["Rozbieżna (dywergentna)", "Zbieżna (konwergentna)", "Transformująca", "Spreding"],
+        "correctAnswer": "Zbieżna (konwergentna)",
+        "explanation": "Slajd 6 definiuje granice zbieżne (konwergentne) jako te, gdzie płyty zbliżają się do siebie, prowadząc do subdukcji lub kolizji.",
+        "slideReference": "Slajd 6"
+    },
+    {
+        "question": "Jak nazywa się proces odsuwania się płyt litosfery od siebie?",
+        "options": ["Subdukcja", "Kolizja", "Spreding", "Konwergencja"],
+        "correctAnswer": "Spreding",
+        "explanation": "Slajd 6 definiuje granice rozbieżne (dywergentne) jako te, gdzie płyty odsuwają się od siebie, a proces ten nazywany jest spredingiem.",
+        "slideReference": "Slajd 6"
+    },
+    {
+        "question": "Na jakim typie granicy płyt litosfery płyty przesuwają się względem siebie w poziomie?",
+        "options": ["Zbieżna", "Rozbieżna", "Transformująca", "Subdukcyjna"],
+        "correctAnswer": "Transformująca",
+        "explanation": "Slajd 6 opisuje granice transformujące jako te, gdzie płyty przesuwają się względem siebie w poziomie.",
+        "slideReference": "Slajd 6"
+    },
+    {
+        "question": "Wielkie Rowy Afrykańskie są przykładem jakiej strefy związanej z ruchem płyt litosfery?",
+        "options": ["Strefy subdukcji", "Strefy kolizji kontynentów", "Strefy spredingu", "Granicy transformującej"],
+        "correctAnswer": "Strefy spredingu",
+        "explanation": "Slajd 8 przedstawia Wielkie Rowy Afrykańskie jako przykład strefy spredingu.",
+        "slideReference": "Slajd 8"
+    },
+    {
+        "question": "Uskok San Andreas w Kalifornii jest przykładem jakiego typu granicy płyt litosfery?",
+        "options": ["Granicy zbieżnej", "Granicy rozbieżnej", "Granicy transformującej (przesuwczej)", "Strefy subdukcji"],
+        "correctAnswer": "Granicy transformującej (przesuwczej)",
+        "explanation": "Slajd 9 opisuje uskok San Andreas jako przykład systemu uskoków transformacyjnych na granicy przesuwczej płyt.",
+        "slideReference": "Slajd 9"
+    },
+    {
+        "question": "Gdzie najczęściej znajdują się uskoki transformacyjne, które mogą przecinać skorupę oceaniczną na długich odcinkach?",
+        "options": ["Wewnątrz kontynentów", "W dnie oceanicznym", "W strefach subdukcji", "Na szczytach gór"],
+        "correctAnswer": "W dnie oceanicznym",
+        "explanation": "Slajd 10 stwierdza, że najwięcej uskoków transformacyjnych znajduje się w dnie oceanicznym.",
+        "slideReference": "Slajd 10"
+    },
+    {
+        "question": "Który kontynent, według tabeli hipsometrii na slajdzie 11, ma najwyższą średnią wysokość?",
+        "options": ["Azja", "Afryka", "Antarktyda", "Europa"],
+        "correctAnswer": "Antarktyda",
+        "explanation": "Tabela na slajdzie 11 pokazuje, że Antarktyda ma najwyższą średnią wysokość (2030 m).",
+        "slideReference": "Slajd 11"
+    },
+    {
+        "question": "Który kontynent, według tabeli hipsometrii na slajdzie 11, ma najniższą średnią wysokość?",
+        "options": ["Europa", "Australia i Oceania", "Ameryka Płd.", "Azja"],
+        "correctAnswer": "Europa",
+        "explanation": "Tabela na slajdzie 11 pokazuje, że Europa ma najniższą średnią wysokość (292 m).",
+        "slideReference": "Slajd 11"
+    },
+    {
+        "question": "Jakiego typu rzeźbę charakteryzuje przedział wysokości 0-300 m n.p.m. i jest ona bardzo mało urozmaicona?",
+        "options": ["Niziny faliste", "Niziny płaskie (równiny)", "Wyżyny pagórkowate", "Góry średnie"],
+        "correctAnswer": "Niziny płaskie (równiny)",
+        "explanation": "Tabela na slajdzie 13 (Źródło: Migoń, 2006) opisuje niziny płaskie jako rzeźbę równinną, bardzo mało urozmaiconą, w przedziale wysokości 0-300* m n.p.m.",
+        "slideReference": "Slajd 13"
+    },
+    {
+        "question": "Jak nazywają się krawędzie bloków kontynentalnych, które przylegają do zbieżnych granic płyt litosferycznych, gdzie dominuje subdukcja lub pogrubianie skorupy?",
+        "options": ["Krawędzie pasywne", "Krawędzie aktywne", "Krawędzie transformujące", "Progi kontynentalne"],
+        "correctAnswer": "Krawędzie aktywne",
+        "explanation": "Slajd 14 definiuje krawędzie aktywne jako te, które przylegają do zbieżnych granic płyt litosferycznych.",
+        "slideReference": "Slajd 14"
+    },
+    {
+        "question": "Jak nazywają się krawędzie bloków kontynentalnych, które oddzielają litosferę kontynentalną od oceanicznej w obrębie jednej płyty i charakteryzują się małą aktywnością tektoniczną?",
+        "options": ["Krawędzie aktywne", "Krawędzie pasywne", "Strefy ryftowe", "Grzbiety śródoceaniczne"],
+        "correctAnswer": "Krawędzie pasywne",
+        "explanation": "Slajd 14 opisuje krawędzie pasywne jako oddzielające litosferę kontynentalną od oceanicznej w obrębie jednej płyty, z małą aktywnością tektoniczną.",
+        "slideReference": "Slajd 14"
+    },
+    {
+        "question": "Podwodne, płaskie obszary przy wybrzeżach, stanowiące przedłużenie lądów i zanurzone w wodach oceanu do głębokości około 200 metrów, to:",
+        "options": ["Wielkie równiny nadbrzeżne", "Stoki kontynentalne", "Progi kontynentalne", "Baseny oceaniczne"],
+        "correctAnswer": "Progi kontynentalne",
+        "explanation": "Slajd 14 definiuje progi kontynentalne jako podwodne, płaskie obszary przy wybrzeżach, będące przedłużeniem lądów, zanurzone do ok. 200 m.",
+        "slideReference": "Slajd 14"
+    },
+    {
+        "question": "Jak dzieli się lawę w zależności od udziału krzemionki (SiO2)?",
+        "options": ["Na lekką i ciężką", "Na kwaśne, obojętne i zasadowe", "Na płynną i lepką", "Na gorącą i zimną"],
+        "correctAnswer": "Na kwaśne, obojętne i zasadowe",
+        "explanation": "Slajd 16 wyjaśnia, że lawę dzieli się na kwaśne (>65% SiO2), obojętne (53-65% SiO2) i zasadowe (<53% SiO2).",
+        "slideReference": "Slajd 16"
+    },
+    {
+        "question": "Który rodzaj gazów wulkanicznych charakteryzuje się temperaturą 200-800°C?",
+        "options": ["Mofety", "Solfatary", "Fumarole", "Dwutlenek węgla"],
+        "correctAnswer": "Fumarole",
+        "explanation": "Slajd 16 podaje, że fumarole mają temperaturę 200-800°C.",
+        "slideReference": "Slajd 16"
+    },
+    {
+        "question": "Do utworów piroklastycznych NIE zaliczamy:",
+        "options": ["Bomb wulkanicznych", "Lapilli", "Pumeksu", "Magmy"],
+        "correctAnswer": "Magmy",
+        "explanation": "Slajd 16 wymienia bomby i bloki wulkaniczne, lapille, piasek i pył wulkaniczny oraz pumeks jako utwory piroklastyczne. Magma to stop skalny pod powierzchnią ziemi.",
+        "slideReference": "Slajd 16"
+    },
+    {
+        "question": "Stożek główny, komin wulkaniczny i komora magmowa to elementy budowy:",
+        "options": ["Rowu tektonicznego", "Grzbietu śródoceanicznego", "Wulkanu", "Uskoku transformującego"],
+        "correctAnswer": "Wulkanu",
+        "explanation": "Slajd 18 przedstawia schemat budowy wulkanu, na którym widoczne są m.in. komora magmowa, komin wulkaniczny i stożek główny.",
+        "slideReference": "Slajd 18"
+    },
+    {
+        "question": "Aktywność wulkaniczna wewnątrz płyt litosfery, nie związana z ich granicami, może występować w rejonach:",
+        "options": ["Grzbietów śródoceanicznych", "Stref subdukcji", "Plam gorąca (hot spot)", "Ryftów kontynentalnych"],
+        "correctAnswer": "Plam gorąca (hot spot)",
+        "explanation": "Slajd 19 wyjaśnia, że aktywność wulkaniczna może występować również wewnątrz płyt litosfery, w rejonach plam gorąca (hot spot).",
+        "slideReference": "Slajd 19"
+    },
+    {
+        "question": "Hawaje, Yellowstone i Islandia są przykładami lokalizacji aktywnych:",
+        "options": ["Granic transformujących", "Stref kolizji kontynentalnej", "Plam gorąca", "Ryftów oceanicznych"],
+        "correctAnswer": "Plam gorąca",
+        "explanation": "Slajd 19 wymienia Hawaje, Yellowstone i Islandię jako miejsca, gdzie znajdują się obecnie aktywne plamy gorąca.",
+        "slideReference": "Slajd 19"
+    },
+    {
+        "question": "Liniowy układ stożków wulkanicznych może wskazywać na:",
+        "options": ["Granicę zbieżną płyt", "Kierunek ruchu płyty pod plamą gorąca", "Obecność uskoku transformującego", "Strefę spredingu"],
+        "correctAnswer": "Kierunek ruchu płyty pod plamą gorąca",
+        "explanation": "Slajd 19 stwierdza, że liniowy układ stożków wulkanicznych wskazuje kierunek ruchu płyty pod plamą gorąca.",
+        "slideReference": "Slajd 19"
+    },
+    {
+        "question": "Wulkany, których produktami erupcji są zarówno lawa, jak i materiały piroklastyczne, a erupcje mogą być spokojne i gwałtowne, to:",
+        "options": ["Wulkany eksplozywne", "Wulkany efuzywne", "Stratowulkany", "Wulkany tarczowe"],
+        "correctAnswer": "Stratowulkany",
+        "explanation": "Slajd 20 opisuje stratowulkany jako wulkany, których produktami są lawa i materiały piroklastyczne, z erupcjami spokojnymi i gwałtownymi, stanowiące większość wulkanów na świecie.",
+        "slideReference": "Slajd 20"
+    },
+    {
+        "question": "Wulkany, z których podczas erupcji wydobywa się tylko lawa (gdy lawa jest kwaśna powstają kopuły lawowe, gdy zasadowa - wulkany tarczowe), to:",
+        "options": ["Wulkany eksplozywne", "Stratowulkany", "Wulkany efuzywne", "Maary"],
+        "correctAnswer": "Wulkany efuzywne",
+        "explanation": "Slajd 20 opisuje wulkany efuzywne jako te, z których podczas erupcji wydobywa się tylko lawa.",
+        "slideReference": "Slajd 20"
+    },
+    {
+        "question": "Mauna Loa i Kilauea na Hawajach oraz wulkany Islandii są przykładami jakiego typu wulkanów?",
+        "options": ["Stratowulkanów", "Wulkanów tarczowych", "Kopuł lawowych", "Stożków żużlowych"],
+        "correctAnswer": "Wulkanów tarczowych",
+        "explanation": "Slajd 21 podaje Mauna Loa, Kilauea i wulkany Islandii jako przykłady wulkanów tarczowych.",
+        "slideReference": "Slajd 21"
+    },
+    {
+        "question": "Jakie nachylenie stoków (do ilu stopni) jest typowe dla wulkanów tarczowych?",
+        "options": ["Do 8°", "Około 30°", "Powyżej 45°", "Pionowe"],
+        "correctAnswer": "Do 8°",
+        "explanation": "Slajd 21 charakteryzuje wulkany tarczowe jako mające łagodne stoki (do 8°).",
+        "slideReference": "Slajd 21"
+    },
+    {
+        "question": "Zwarte wzniesienia o stromych stokach i niewielkiej powierzchni, powstające podczas erupcji law kwaśnych o wysokiej lepkości, to:",
+        "options": ["Wulkany tarczowe", "Stratowulkany", "Kopuły lawowe", "Stożki żużlowe"],
+        "correctAnswer": "Kopuły lawowe",
+        "explanation": "Slajd 22 definiuje kopuły lawowe jako zwarte wzniesienia o stromych stokach, powstające z law kwaśnych o wysokiej lepkości.",
+        "slideReference": "Slajd 22"
+    },
+    {
+        "question": "Wulkany mieszane, o stożkach nachylonych około 30°, zbudowane z naprzemiennych warstw lawy i materiału piroklastycznego, to:",
+        "options": ["Wulkany tarczowe", "Kopuły lawowe", "Stratowulkany", "Stożki żużlowe"],
+        "correctAnswer": "Stratowulkany",
+        "explanation": "Slajd 23 opisuje stratowulkany (wulkany mieszane) jako mające stożki o nachyleniu około 30°, zbudowane z naprzemiennych warstw lawy i materiału piroklastycznego.",
+        "slideReference": "Slajd 23"
+    },
+    {
+        "question": "Małe formacje wulkaniczne zbudowane głównie z materiałów piroklastycznych (np. żużla), wyrzucanych z krateru, o stromych zboczach (30°-40°), to:",
+        "options": ["Stratowulkany", "Kopuły lawowe", "Stożki żużlowe", "Wulkany tarczowe"],
+        "correctAnswer": "Stożki żużlowe",
+        "explanation": "Slajd 24 definiuje stożki żużlowe jako małe formacje zbudowane głównie z materiałów piroklastycznych, o stromych zboczach.",
+        "slideReference": "Slajd 24"
+    },
+    {
+        "question": "Ogromne zagłębienia w szczytowej części stratowulkanów, powstające w wyniku gwałtownej erupcji i zapadnięcia się komory magmowej, to:",
+        "options": ["Kratery uderzeniowe", "Kaldery", "Maary", "Doliny ryftowe"],
+        "correctAnswer": "Kaldery",
+        "explanation": "Slajd 25 opisuje kaldery jako ogromne zagłębienia w szczytowej części stratowulkanów, powstające w wyniku zapadnięcia się komory magmowej po erupcji.",
+        "slideReference": "Slajd 25"
+    },
+    {
+        "question": "Wulkany eksplozywne o lejkowatych wgłębieniach otoczonych niewysokim wałem piroklastycznym, których kanały wypełnione są brekcją wulkaniczną (diatremą), to:",
+        "options": ["Stratowulkany", "Kaldery", "Maary", "Kopuły lawowe"],
+        "correctAnswer": "Maary",
+        "explanation": "Slajd 26 definiuje maary jako wulkany eksplozywne z lejkowatymi wgłębieniami, których kanały to diatremy.",
+        "slideReference": "Slajd 26"
+    },
+    {
+        "question": "Jak nazywa się proces rozluźniania, kruszenia i chemicznej przemiany składników litych skał w luźne osady lub przeprowadzenie ich do roztworu?",
+        "options": ["Erozja", "Denudacja", "Wietrzenie", "Akumulacja"],
+        "correctAnswer": "Wietrzenie",
+        "explanation": "Slajd 31 definiuje wietrzenie jako proces rozluźniania, kruszenia i chemicznej przemiany skał.",
+        "slideReference": "Slajd 31"
+    },
+    {
+        "question": "Jakie trzy główne typy wietrzenia skał wyróżniamy ze względu na czynniki powodujące i charakter zmian?",
+        "options": ["Powierzchniowe, wgłębne, boczne", "Fizyczne (mechaniczne), chemiczne, biologiczne", "Termiczne, mrozowe, solne", "Szybkie, wolne, okresowe"],
+        "correctAnswer": "Fizyczne (mechaniczne), chemiczne, biologiczne",
+        "explanation": "Slajd 31 wymienia trzy typy wietrzenia: fizyczne (mechaniczne), chemiczne i biologiczne.",
+        "slideReference": "Slajd 31"
+    },
+    {
+        "question": "Proces wietrzenia fizycznego, w którym dochodzi do redukcji ciśnienia na skałę wskutek usunięcia nadległych warstw, prowadzący do rozszerzania się skały i powstawania pęknięć, to:",
+        "options": ["Eksfoliacja", "Zamróz", "Odciążenie", "Dezintegracja granularna"],
+        "correctAnswer": "Odciążenie",
+        "explanation": "Slajd 33 definiuje odciążenie jako proces wietrzenia fizycznego polegający na redukcji ciśnienia i powstawaniu pęknięć.",
+        "slideReference": "Slajd 33"
+    },
+    {
+        "question": "Wietrzenie insolacyjne (termiczne) jest charakterystyczne dla klimatów:",
+        "options": ["Polarnych i wilgotnych", "Umiarkowanych i deszczowych", "Gorących i suchych", "Morskich i łagodnych"],
+        "correctAnswer": "Gorących i suchych",
+        "explanation": "Slajd 34 stwierdza, że wietrzenie insolacyjne jest charakterystyczne dla klimatów gorących i suchych.",
+        "slideReference": "Slajd 34"
+    },
+    {
+        "question": "W jakich skałach najsilniej zachodzi wietrzenie termiczne, ze względu na różną rozszerzalność cieplną minerałów?",
+        "options": ["W skałach monomineralnych o jasnej barwie", "W skałach zbudowanych z różnokolorowych minerałów", "W skałach o dużej zawartości wody", "W skałach głębinowych"],
+        "correctAnswer": "W skałach zbudowanych z różnokolorowych minerałów",
+        "explanation": "Slajd 34 (i pośrednio 35) wskazuje, że najsilniejsze wietrzenie termiczne zachodzi w skałach z różnokolorowych minerałów, które mają różną rozszerzalność cieplną.",
+        "slideReference": "Slajd 34, 35"
+    },
+    {
+        "question": "Rozpad skały na drobne ziarna w wyniku nierównomiernego rozszerzania się i kurczenia minerałów o różnej rozszerzalności cieplnej to:",
+        "options": ["Eksfoliacja (łuszczenie się)", "Dezintegracja granularna (rozpad ziarnisty)", "Zamróz", "Wietrzenie solne"],
+        "correctAnswer": "Dezintegracja granularna (rozpad ziarnisty)",
+        "explanation": "Slajd 35 definiuje rozpad ziarnisty (dezintegrację granularną) jako skutek różnej rozszerzalności cieplnej minerałów.",
+        "slideReference": "Slajd 35"
+    },
+    {
+        "question": "Odrywanie się przypowierzchniowej warstwy skały, najbardziej narażonej na zmiany temperatury, to proces nazywany:",
+        "options": ["Dezintegracją granularną", "Wietrzeniem mrozowym", "Eksfoliacją (łuszczeniem się skały)", "Wietrzeniem solnym"],
+        "correctAnswer": "Eksfoliacją (łuszczeniem się skały)",
+        "explanation": "Slajd 35 definiuje łuszczenie się skały (eksfoliację) jako odrywanie się przypowierzchniowej warstwy skały.",
+        "slideReference": "Slajd 35"
+    },
+    {
+        "question": "Rozpad skały pod wpływem wody zamarzającej w szczelinach skalnych, która zwiększa swoją objętość, to:",
+        "options": ["Wietrzenie termiczne", "Wietrzenie solne", "Wietrzenie mrozowe (kongelacja)", "Wietrzenie chemiczne"],
+        "correctAnswer": "Wietrzenie mrozowe (kongelacja)",
+        "explanation": "Slajd 36 opisuje wietrzenie mrozowe (zamróz, kongelacja) jako rozpad skały pod wpływem zamarzającej wody.",
+        "slideReference": "Slajd 36"
+    },
+    {
+        "question": "Ostrokrawędziste odłamki skalne, będące produktem wietrzenia mrozowego, to:",
+        "options": ["Żwir rzeczny", "Piasek eoliczny", "Gruz", "Ił"],
+        "correctAnswer": "Gruz",
+        "explanation": "Slajd 36 stwierdza, że produktem wietrzenia mrozowego są ostrokrawędziste odłamki skalne, czyli gruz.",
+        "slideReference": "Slajd 36"
+    },
+    {
+        "question": "Jak nazywają się rumowiska skalne powstające w górach w wyniku wietrzenia mrozowego, charakterystyczne np. dla polskich Karkonoszy czy Gór Świętokrzyskich?",
+        "options": ["Moreny", "Stożki piargowe", "Gołoborza", "Wydmy"],
+        "correctAnswer": "Gołoborza",
+        "explanation": "Slajd 36 wymienia gołoborza jako rumowiska skalne powstające w górach w wyniku wietrzenia mrozowego.",
+        "slideReference": "Slajd 36"
+    },
+    {
+        "question": "Wietrzenie zachodzące w klimatach gorących i suchych, gdzie sól krystalizująca w szczelinach skalnych zwiększa swoją objętość, prowadząc do rozpadu skały, to:",
+        "options": ["Wietrzenie mrozowe", "Wietrzenie termiczne", "Wietrzenie solne (eskudacja)", "Wietrzenie biologiczne"],
+        "correctAnswer": "Wietrzenie solne (eskudacja)",
+        "explanation": "Slajd 37 definiuje wietrzenie solne (eskudację) jako proces zachodzący w klimatach gorących i suchych, spowodowany krystalizacją soli.",
+        "slideReference": "Slajd 37"
+    },
+    {
+        "question": "Jak nazywa się charakterystyczna forma minerału powstająca na pustyniach w wyniku wietrzenia solnego, np. gipsu?",
+        "options": ["Graniak", "Róża pustyni", "Driokanter", "Konkrecja żelazista"],
+        "correctAnswer": "Róża pustyni",
+        "explanation": "Obrazek na slajdzie 37 przedstawia różę pustyni jako przykład efektu wietrzenia solnego.",
+        "slideReference": "Slajd 37"
+    },
+    {
+        "question": "Które skały (np. ił, mułowiec, łupek ilasty) charakteryzują się dużą zawartością minerałów ilastych (kaolinit, montmorylonit, illit) i zdolnością do absorbowania wody oraz zmiany objętości?",
+        "options": ["Skały magmowe głębinowe", "Skały metamorficzne", "Skały ilaste", "Skały węglanowe"],
+        "correctAnswer": "Skały ilaste",
+        "explanation": "Slajd 38 opisuje skały ilaste jako te, które charakteryzują się dużą zawartością minerałów ilastych i zdolnością do absorpcji wody.",
+        "slideReference": "Slajd 38"
+    },
+    {
+        "question": "Pęcznienie i kurczenie skał ilastych, wynikające z absorpcji i utraty wody przez minerały ilaste, prowadzi do powstawania:",
+        "options": ["Jaskiń krasowych", "Gołoborzy", "Spękań i stopniowej dezintegracji skały", "Grzybów skalnych"],
+        "correctAnswer": "Spękań i stopniowej dezintegracji skały",
+        "explanation": "Slajd 38 wyjaśnia, że pęcznienie i kurczenie skał ilastych prowadzi do powstawania spękań i dezintegracji.",
+        "slideReference": "Slajd 38"
+    },
+    {
+        "question": "Rozdrobnienie się skał na skutek np. rozpuszczania, utlenienia lub uwadniania, prowadzące do zmiany składu mineralnego skały, to:",
+        "options": ["Wietrzenie fizyczne", "Wietrzenie biologiczne", "Wietrzenie chemiczne", "Erozja"],
+        "correctAnswer": "Wietrzenie chemiczne",
+        "explanation": "Slajd 39 definiuje wietrzenie chemiczne jako rozdrobnienie skał prowadzące do zmiany ich składu mineralnego.",
+        "slideReference": "Slajd 39"
+    },
+    {
+        "question": "W jakim klimacie przeważa wietrzenie chemiczne?",
+        "options": ["W klimacie polarnym i suchym", "W klimacie gorącym i wilgotnym", "W klimacie umiarkowanym kontynentalnym", "W klimacie górskim"],
+        "correctAnswer": "W klimacie gorącym i wilgotnym",
+        "explanation": "Slajd 39 stwierdza, że wietrzenie chemiczne przeważa w klimacie gorącym i wilgotnym.",
+        "slideReference": "Slajd 39"
+    },
+    {
+        "question": "Proces, w którym minerały reagują z wodą, prowadząc do ich rozkładu, to:",
+        "options": ["Karbonatyzacja", "Utlenianie", "Hydroliza", "Hydratacja"],
+        "correctAnswer": "Hydroliza",
+        "explanation": "Slajd 40 definiuje hydrolizę jako proces reakcji minerałów z wodą, prowadzący do ich rozkładu.",
+        "slideReference": "Slajd 40"
+    },
+    {
+        "question": "Proces, w którym skalenie reagują z wodą i kwasem węglowym, przekształcając się w kaolinit (minerał ilasty), to:",
+        "options": ["Lateryzacja", "Kaolinityzacja", "Hydratacja", "Sylifikacja"],
+        "correctAnswer": "Kaolinityzacja",
+        "explanation": "Slajd 40 opisuje kaolinityzację jako proces przekształcania skaleni w kaolinit.",
+        "slideReference": "Slajd 40"
+    },
+    {
+        "question": "Intensywna hydroliza prowadząca do powstawania gleb bogatych w tlenki żelaza i glinu (hematyt i gibbsyt) w gorących, tropikalnych regionach (czerwone gleby ferralitowe) to:",
+        "options": ["Kaolinityzacja", "Glejobielicowanie", "Brunatnienie", "Lateryzacja"],
+        "correctAnswer": "Lateryzacja",
+        "explanation": "Slajd 40 opisuje lateryzację jako intensywną hydrolizę prowadzącą do powstawania gleb bogatych w tlenki żelaza i glinu.",
+        "slideReference": "Slajd 40"
+    },
+    {
+        "question": "Przemiana minerałów bezwodnych w słabo uwodnione, np. przemiana anhydrytu w gips lub hematytu w limonit, to:",
+        "options": ["Hydroliza", "Hydratacja (uwodnienie)", "Dehydratacja", "Karbonatyzacja"],
+        "correctAnswer": "Hydratacja (uwodnienie)",
+        "explanation": "Slajd 41 definiuje uwodnienie (hydratację) jako przemianę minerałów bezwodnych w słabo uwodnione.",
+        "slideReference": "Slajd 41"
+    },
+    {
+        "question": "Proces chemiczny, w którym minerały zawierające węglany (np. wapienie, dolomity) reagują z kwasem węglowym (CO₂) w wodzie, prowadząc do ich rozpuszczania, nazywany również krasowieniem, to:",
+        "options": ["Hydroliza", "Utlenianie", "Redukcja", "Karbonatyzacja"],
+        "correctAnswer": "Karbonatyzacja",
+        "explanation": "Slajd 42 definiuje karbonatyzację jako proces reakcji minerałów węglanowych z kwasem węglowym, prowadzący do ich rozpuszczenia (krasowienia).",
+        "slideReference": "Slajd 42"
+    },
+    {
+        "question": "Jaskinie i stalaktyty są przykładami form powstałych w wyniku jakiego procesu wietrzenia chemicznego skał węglanowych?",
+        "options": ["Hydrolizy", "Lateryzacji", "Karbonatyzacji", "Uwadniania"],
+        "correctAnswer": "Karbonatyzacji",
+        "explanation": "Slajd 42 podaje, że karbonatyzacja prowadzi do powstawania form takich jak jaskinie czy stalaktyty.",
+        "slideReference": "Slajd 42"
+    },
+    {
+        "question": "Proces, w którym minerały tracą elektrony, co powoduje zmianę ich składu chemicznego (np. żelazo II w żelazo III), to:",
+        "options": ["Redukcja", "Hydroliza", "Utlenianie", "Karbonatyzacja"],
+        "correctAnswer": "Utlenianie",
+        "explanation": "Slajd 44 definiuje utlenianie jako proces, w którym minerały tracą elektrony.",
+        "slideReference": "Slajd 44"
+    },
+    {
+        "question": "Proces odwrotny do utleniania, w którym minerały przyjmują elektrony, zmieniając swój skład (np. tlenek żelaza (Fe³⁺) w żelazo II), to:",
+        "options": ["Utlenianie", "Redukcja", "Hydratacja", "Polimeryzacja"],
+        "correctAnswer": "Redukcja",
+        "explanation": "Slajd 44 definiuje redukcję jako odwrotny proces do utleniania, gdzie minerały przyjmują elektrony.",
+        "slideReference": "Slajd 44"
+    },
+    {
+        "question": "Proces wietrzenia skał i minerałów zachodzący pod wpływem działalności organizmów żywych (roślin, grzybów, bakterii, zwierząt) to:",
+        "options": ["Wietrzenie fizyczne", "Wietrzenie chemiczne", "Wietrzenie biologiczne", "Denudacja"],
+        "correctAnswer": "Wietrzenie biologiczne",
+        "explanation": "Slajd 45 definiuje wietrzenie biologiczne jako proces wietrzenia pod wpływem organizmów żywych.",
+        "slideReference": "Slajd 45"
+    },
+    {
+        "question": "Mechaniczne niszczenie skał przez korzenie roślin oraz wydzielanie kwasów organicznych przez grzyby i bakterie to przykłady:",
+        "options": ["Wyłącznie wietrzenia fizycznego", "Wyłącznie wietrzenia chemicznego", "Wietrzenia biologicznego", "Procesów eolicznych"],
+        "correctAnswer": "Wietrzenia biologicznego",
+        "explanation": "Slajd 45 podaje te działania jako przykłady wietrzenia biologicznego.",
+        "slideReference": "Slajd 45"
+    },
+    {
+        "question": "Proces przemieszczania się zwietrzeliny po nachylonych powierzchniach (stoku) do miejsc położonych poniżej, pod wpływem siły ciężkości, to:",
+        "options": ["Erozja rzeczna", "Ruchy masowe", "Wietrzenie", "Akumulacja lodowcowa"],
+        "correctAnswer": "Ruchy masowe",
+        "explanation": "Slajd 46 definiuje ruchy masowe jako przemieszczanie się zwietrzeliny po stoku pod wpływem siły ciężkości.",
+        "slideReference": "Slajd 46"
+    },
+    {
+        "question": "Jak nazywa się proces niszczenia powierzchni stoku poprzez jego obniżanie, wyrównywanie i niemal spłaszczenie, w którym uczestniczą m.in. ruchy masowe?",
+        "options": ["Agradacja", "Denudacja stoku", "Subdukcja", "Spreding"],
+        "correctAnswer": "Denudacja stoku",
+        "explanation": "Slajd 46 wyjaśnia, że ruchy masowe przyczyniają się do denudacji stoku.",
+        "slideReference": "Slajd 46"
+    },
+    {
+        "question": "Rodzaj ruchu masowego polegający na powolnym, niemal niezauważalnym 'płynięciu' gruntu i zwietrzeliny w dół stoku, objawiający się np. pochyleniem drzew czy słupów, to:",
+        "options": ["Obrywanie", "Osuwisko", "Spełzywanie", "Spływ błotny"],
+        "correctAnswer": "Spełzywanie",
+        "explanation": "Slajd 48 przedstawia spełzywanie jako powolny ruch gruntu, z charakterystycznymi jego efektami.",
+        "slideReference": "Slajd 48"
+    },
+    {
+        "question": "Gwałtowne przemieszczanie się mas skalnych lub zwietrzeliny w dół stromego stoku, często inicjowane przez trzęsienia ziemi, intensywne opady lub podcięcie stoku, to:",
+        "options": ["Spełzywanie", "Soliflukcja", "Osuwisko", "Odpadanie"],
+        "correctAnswer": "Osuwisko",
+        "explanation": "Slajd 53 (i 54) opisuje osuwisko jako proces gwałtownego przemieszczania się mas skalnych/zwietrzeliny. 'Odpadanie' dotyczy pojedynczych okruchów.",
+        "slideReference": "Slajd 53, 54"
+    },
+    {
+        "question": "Spływanie zwietrzeliny silnie przesiąkniętej wodą, przemieszczającej się z dużą prędkością w dół stoku, to:",
+        "options": ["Obryw", "Spełzywanie", "Spływ (np. błotny)", "Osuwisko skalne"],
+        "correctAnswer": "Spływ (np. błotny)",
+        "explanation": "Slajd 50 (i opis na slajdzie 59) charakteryzuje spływanie jako proces przemieszczania się uwodnionej zwietrzeliny.",
+        "slideReference": "Slajd 50, 59"
+    },
+    {
+        "question": "Rodzaj ruchów masowych występujący na stromych stokach, polegający na wymywaniu zwietrzeliny i gleby przez wodę opadową lub roztopową, to:",
+        "options": ["Soliflukcja", "Spełzywanie", "Spłukiwanie", "Obrywanie"],
+        "correctAnswer": "Spłukiwanie",
+        "explanation": "Slajd 51 definiuje spłukiwanie jako wymywanie zwietrzeliny i gleby na stromych stokach.",
+        "slideReference": "Slajd 51"
+    },
+    {
+        "question": "Wcięcia w dolinie w kształcie 'V' w obszarze zwietrzelinowym, powstające w wyniku intensywnego spłukiwania, to:",
+        "options": ["Wądoły", "Wąwozy", "Debry", "Parowy"],
+        "correctAnswer": "Debry",
+        "explanation": "Slajd 51 definiuje debry jako wcięcia w kształcie 'V' powstające w wyniku spłukiwania.",
+        "slideReference": "Slajd 51"
+    },
+    {
+        "question": "Proces powolnego przemieszczania się zwietrzeliny po stoku pod wpływem grawitacji, szczególnie w obszarach mroźnych, gdzie woda w glebie cyklicznie zamarza i rozmraża, to:",
+        "options": ["Spłukiwanie", "Osuwanie", "Spełzywanie", "Soliflukcja"],
+        "correctAnswer": "Soliflukcja",
+        "explanation": "Slajd 52 definiuje soliflukcję jako powolne przemieszczanie się zwietrzeliny w obszarach mroźnych.",
+        "slideReference": "Slajd 52"
+    },
+    {
+        "question": "Gdzie najczęściej występuje soliflukcja?",
+        "options": ["Na pustyniach gorących", "W strefach peryglacjalnych lub na obszarach permafrostu", "W lasach równikowych", "Na wybrzeżach morskich"],
+        "correctAnswer": "W strefach peryglacjalnych lub na obszarach permafrostu",
+        "explanation": "Slajd 52 wskazuje, że soliflukcja najczęściej występuje w strefach peryglacjalnych lub na obszarach permafrostu.",
+        "slideReference": "Slajd 52"
+    },
+    {
+        "question": "Osuwisko, w którym materiał zsuwa się po zakrzywionej powierzchni o osłabionej spójności skalnej, często z pochylaniem się drzew, to:",
+        "options": ["Osuwisko gruzowe (lawina gruzowa)", "Osuwisko gruntowe", "Zawalisko osuwiskowe", "Osuwisko strukturalne konsekwentne"],
+        "correctAnswer": "Zawalisko osuwiskowe",
+        "explanation": "Slajd 54 definiuje zawalisko osuwiskowe jako zsuwanie się materiału po zakrzywionej powierzchni.",
+        "slideReference": "Slajd 54"
+    },
+    {
+        "question": "Gwałtowne przemieszczanie się większych bloków skalnych w dół stoku, które często ulegają rozkruszeniu, to:",
+        "options": ["Zawalisko osuwiskowe", "Osuwisko gruntowe", "Osuwisko gruzowe (lawina gruzowa)", "Osuwisko strukturalne insekwentne"],
+        "correctAnswer": "Osuwisko gruzowe (lawina gruzowa)",
+        "explanation": "Slajd 54 definiuje osuwisko gruzowe (lawinę gruzową) jako gwałtowne przemieszczanie się bloków skalnych.",
+        "slideReference": "Slajd 54"
+    },
+    {
+        "question": "Który z wymienionych czynników NIE sprzyja powstawaniu osuwisk?",
+        "options": ["Duże nachylenie stoku", "Luźne materiały budujące stok", "Nadmiar wody w gruncie", "Gęsta, głęboko korzeniąca się roślinność"],
+        "correctAnswer": "Gęsta, głęboko korzeniąca się roślinność",
+        "explanation": "Slajd 55 wymienia brak roślinności jako czynnik sprzyjający osuwiskom (punkt 6). Gęsta roślinność stabilizuje stok.",
+        "slideReference": "Slajd 55"
+    },
+    {
+        "question": "Proces stopniowego obniżania i wyrównywania powierzchni terenu poprzez erozję, wietrzenie, transport i akumulację materiału skalnego pod wpływem czynników zewnętrznych to:",
+        "options": ["Tektonika", "Wulkanizm", "Denudacja", "Metamorfizm"],
+        "correctAnswer": "Denudacja",
+        "explanation": "Slajd 57 definiuje denudację jako proces stopniowego obniżania i wyrównywania powierzchni terenu.",
+        "slideReference": "Slajd 57"
+    },
+    {
+        "question": "Stok młody charakteryzuje się:",
+        "options": ["Łagodnym nachyleniem (poniżej 55°)", "Wyrównaną powierzchnią", "Stabilizacją procesów erozyjnych", "Stromym nachyleniem (powyżej 55°) i obecnością ostrych krawędzi"],
+        "correctAnswer": "Stromym nachyleniem (powyżej 55°) i obecnością ostrych krawędzi",
+        "explanation": "Slajd 58 opisuje stok młody jako mający strome nachylenie (powyżej 55°) i ostre krawędzie.",
+        "slideReference": "Slajd 58"
+    },
+    {
+        "question": "Stok dojrzały charakteryzuje się:",
+        "options": ["Stromym nachyleniem (powyżej 55°)", "Intensywnymi procesami erozyjnymi", "Łagodniejszym nachyleniem (poniżej 55°) i wyrównaną powierzchnią", "Obecnością żlebów i urwisk"],
+        "correctAnswer": "Łagodniejszym nachyleniem (poniżej 55°) i wyrównaną powierzchnią",
+        "explanation": "Slajd 58 opisuje stok dojrzały jako mający łagodniejsze nachylenie (poniżej 55°) i wyrównaną powierzchnię.",
+        "slideReference": "Slajd 58"
+    },
+    {
+        "question": "Przemieszczenie w dół stoku uwodnionej pokrywy zwietrzelinowej lub ziemnej, gdzie woda zajmuje 10-30% masy, to:",
+        "options": ["Spełzywanie", "Spływanie", "Osuwanie translacyjne", "Spłukiwanie warstwowe"],
+        "correctAnswer": "Spływanie",
+        "explanation": "Slajd 59 definiuje spływanie jako przemieszczenie uwodnionej pokrywy, gdzie woda zajmuje 10-30% masy.",
+        "slideReference": "Slajd 59"
+    },
+    {
+        "question": "Spływy błotne (mud flow) transportują głównie jaki rodzaj materiału?",
+        "options": ["Gruby materiał (głazy, bloki)", "Drobny materiał (ilasty, pylasty)", "Tylko wodę", "Drewno i szczątki roślinne"],
+        "correctAnswer": "Drobny materiał (ilasty, pylasty)",
+        "explanation": "Slajd 59 określa, że spływy błotne transportują drobny materiał (ilasty, pylasty).",
+        "slideReference": "Slajd 59"
+    },
+    {
+        "question": "Spływy gruzowe (debris flow) transportują głównie jaki rodzaj materiału?",
+        "options": ["Drobny materiał (ilasty, pylasty)", "Gruby materiał", "Tylko piasek", "Roztwory chemiczne"],
+        "correctAnswer": "Gruby materiał",
+        "explanation": "Slajd 59 określa, że spływy gruzowe transportują gruby materiał.",
+        "slideReference": "Slajd 59"
+    },
+    {
+        "question": "Przemieszczanie się wody po całej powierzchni stoku, powodujące równomierne zdzieranie materiału, to:",
+        "options": ["Spływ liniowy (erozja liniowa)", "Spływ warstwowy (spłukiwanie, zmyw powierzchniowy)", "Spływ podpowierzchniowy", "Spływ skoncentrowany"],
+        "correctAnswer": "Spływ warstwowy (spłukiwanie, zmyw powierzchniowy)",
+        "explanation": "Slajd 60 definiuje spływ warstwowy jako przemieszczanie się wody po całej powierzchni stoku, prowadzące do spłukiwania.",
+        "slideReference": "Slajd 60"
+    },
+    {
+        "question": "Spływ wody przebiegający w sposób linijny efemerycznymi lub epizodycznymi korytami to:",
+        "options": ["Spływ warstwowy", "Erozja liniowa", "Denudacja chemiczna", "Soliflukcja"],
+        "correctAnswer": "Erozja liniowa",
+        "explanation": "Slajd 60 definiuje spływ liniowy jako przebiegający efemerycznymi korytami, co jest równoznaczne z erozją liniową.",
+        "slideReference": "Slajd 60"
+    },
+    {
+        "question": "Formy terenu w postaci szerokich, wklęsłych obniżeń, powstające w wyniku długotrwałych procesów denudacyjnych, szczególnie spłukiwania materiału, które zazwyczaj nie zawierają cieku wodnego, to:",
+        "options": ["Dolinki erozyjno-denudacyjne", "Niecki denudacyjne", "Wąwozy", "Parowy"],
+        "correctAnswer": "Niecki denudacyjne",
+        "explanation": "Slajd 61 definiuje niecki denudacyjne jako szerokie, wklęsłe obniżenia, powstające w wyniku spłukiwania, zazwyczaj bez cieku wodnego.",
+        "slideReference": "Slajd 61"
+    },
+    {
+        "question": "Głęboka, sucha dolina o małym spadku, stromych zboczach i wąskim dnie, wyróżniająca się urwistymi zboczami w przekroju poprzecznym, powstająca w średnio spoistych podłożach, to:",
+        "options": ["Debrza", "Parów", "Wąwóz", "Niecka denudacyjna"],
+        "correctAnswer": "Wąwóz",
+        "explanation": "Slajd 64 definiuje wąwóz jako głęboką, suchą dolinę o stromych zboczach i wąskim dnie.",
+        "slideReference": "Slajd 64"
+    },
+    {
+        "question": "Dolina w kształcie litery 'V', o stromych stokach rozcinanych przez krótkie suche dolinki o dużym i niewyrównanym spadku (młode rozcięcia erozyjne), to:",
+        "options": ["Parów", "Wąwóz", "Debrza", "Dolina rzeczna dojrzała"],
+        "correctAnswer": "Debrza",
+        "explanation": "Slajd 65 definiuje debrze jako doliny w kształcie 'V' o stromych stokach i niewyrównanym spadku.",
+        "slideReference": "Slajd 65"
+    },
+    {
+        "question": "Sucha dolina, której dno jest dość szerokie, spadek wyrównany, a zbocza złagodzone i często zalesione, pozbawiona segmentów urwistych, to:",
+        "options": ["Debrza", "Wąwóz", "Dolina U-kształtna", "Parów"],
+        "correctAnswer": "Parów",
+        "explanation": "Slajd 65 definiuje parowy jako suche doliny o szerokim dnie, wyrównanym spadku i złagodzonych zboczach.",
+        "slideReference": "Slajd 65"
+    },
+    {
+        "question": "Forma terenu powstała w wyniku akumulacji osadów transportowanych przez wodę, gdzie prędkość przepływu rzeki lub strumienia spada, tworząc strukturę w kształcie wachlarza, to:",
+        "options": ["Delta rzeczna", "Terasa rzeczna", "Stożek napływowy", "Wydma śródlądowa"],
+        "correctAnswer": "Stożek napływowy",
+        "explanation": "Slajd 68 definiuje stożek napływowy jako formę akumulacji osadów w kształcie wachlarza, powstającą przy spadku prędkości przepływu.",
+        "slideReference": "Slajd 68"
+    },
+    {
+        "question": "Wszystkie procesy związane z działaniem wody płynącej, obejmujące erozję, transport i akumulację materiału w korytach rzecznych i ich otoczeniu, to:",
+        "options": ["Procesy glacjalne", "Procesy eoliczne", "Procesy fluwialne", "Procesy krasowe"],
+        "correctAnswer": "Procesy fluwialne",
+        "explanation": "Slajd 70 definiuje procesy fluwialne jako wszystkie procesy związane z działaniem wody płynącej.",
+        "slideReference": "Slajd 70"
+    },
+    {
+        "question": "Ruch wody w korycie charakteryzujący się bardzo małymi prędkościami i występujący w płytkich korytach to:",
+        "options": ["Ruch turbulentny", "Ruch laminarny", "Ruch nadkrytyczny", "Ruch rwący"],
+        "correctAnswer": "Ruch laminarny",
+        "explanation": "Slajd 71 definiuje ruch laminarny jako ruch o bardzo małych prędkościach w płytkich korytach.",
+        "slideReference": "Slajd 71"
+    },
+    {
+        "question": "Ruch wody w korycie charakteryzujący się chaotycznym przepływem, dużymi prędkościami i mieszaniem w profilu pionowym to:",
+        "options": ["Ruch laminarny", "Ruch spokojny", "Ruch podkrytyczny", "Ruch turbulentny"],
+        "correctAnswer": "Ruch turbulentny",
+        "explanation": "Slajd 71 definiuje ruch turbulentny jako przepływ chaotyczny z dużymi prędkościami i mieszaniem.",
+        "slideReference": "Slajd 71"
+    },
+    {
+        "question": "Liczba Froude'a (F) służy do rozróżnienia między jakimi rodzajami ruchu wody w korycie?",
+        "options": ["Ruchem szybkim i wolnym", "Ruchem laminarnym i turbulentnym", "Ruchem podkrytycznym (spokojnym, F<1) i nadkrytycznym (rwącym, F>1)", "Ruchem powierzchniowym i wgłębnym"],
+        "correctAnswer": "Ruchem podkrytycznym (spokojnym, F<1) i nadkrytycznym (rwącym, F>1)",
+        "explanation": "Slajd 71 wyjaśnia, że liczba Froude'a służy do rozróżnienia ruchu podkrytycznego (F<1) i nadkrytycznego (F>1).",
+        "slideReference": "Slajd 71"
+    },
+    {
+        "question": "Głębokość, do jakiej rzeka może wcinać swe koryto i dolinę, to:",
+        "options": ["Koryto rzeki", "Dno doliny", "Baza erozyjna rzeki", "Taras zalewowy"],
+        "correctAnswer": "Baza erozyjna rzeki",
+        "explanation": "Slajd 72 (i grafika) definiuje bazę erozyjną jako głębokość, do jakiej rzeka może wcinać swe koryto i dolinę.",
+        "slideReference": "Slajd 72"
+    },
+    {
+        "question": "Wąskie doliny o prawie pionowych, urwistych brzegach, powstające gdy erozja denna jest bardzo silna, a skały podłoża twarde (np. granity, bazalty), to:",
+        "options": ["Jary", "Kaniony", "Gardziele", "Doliny płaskodenne"],
+        "correctAnswer": "Gardziele",
+        "explanation": "Slajd 73 opisuje gardziele jako wąskie doliny o pionowych brzegach, powstające w twardych skałach przy silnej erozji dennej.",
+        "slideReference": "Slajd 73"
+    },
+    {
+        "question": "Doliny o stromych zboczach, powstające gdy erozja jest słabsza, a rzeka migruje bocznie, to:",
+        "options": ["Gardziele", "Kaniony", "Jary", "Doliny wklęsłodenne"],
+        "correctAnswer": "Jary",
+        "explanation": "Slajd 73 opisuje jary jako doliny o stromych zboczach, powstające przy słabszej erozji i migracji bocznej rzeki.",
+        "slideReference": "Slajd 73"
+    },
+    {
+        "question": "Typ doliny rzecznej charakteryzujący się szerokim, płaskim dnem i stosunkowo stromymi brzegami, powstający w wyniku erozji dennej i bocznej oraz zasypania osadami, to:",
+        "options": ["Dolina wciosowa", "Dolina płaskodenna", "Dolina wklęsłodenna", "Gardziel"],
+        "correctAnswer": "Dolina płaskodenna",
+        "explanation": "Slajd 74 opisuje dolinę płaskodenną jako mającą szerokie, płaskie dno i stosunkowo strome brzegi.",
+        "slideReference": "Slajd 74"
+    },
+    {
+        "question": "Doliny, w których rzeka płynie zgodnie z kierunkiem nachylenia warstw skalnych, to doliny:",
+        "options": ["Subsekwentne", "Obsekwentne", "Konsekwentne", "Antecedentne"],
+        "correctAnswer": "Konsekwentne",
+        "explanation": "Slajd 75 definiuje doliny konsekwentne jako te, gdzie rzeka płynie zgodnie z kierunkiem nachylenia warstw.",
+        "slideReference": "Slajd 75"
+    },
+    {
+        "question": "Doliny, w których rzeka płynie przeciwnie do kierunku nachylenia warstw skalnych, to doliny:",
+        "options": ["Konsekwentne", "Subsekwentne", "Obsekwentne", "Rezekwentne"],
+        "correctAnswer": "Subsekwentne",
+        "explanation": "Slajd 75 definiuje doliny subsekwentne jako te, gdzie rzeka płynie przeciwnie do kierunku nachylenia warstw.",
+        "slideReference": "Slajd 75"
+    },
+    {
+        "question": "Transport materiału w korycie rzeki polegający na przesuwaniu lub przemieszczaniu po dnie największych fragmentów skalnych to:",
+        "options": ["Toczenie", "Saltacja", "Wleczenie", "Zawiesina"],
+        "correctAnswer": "Wleczenie",
+        "explanation": "Grafika na slajdzie 79 przedstawia wleczenie jako przesuwanie największych fragmentów po dnie.",
+        "slideReference": "Slajd 79"
+    },
+    {
+        "question": "Transport materiału w korycie rzeki polegający na przemieszczaniu okruchów skalnych poprzez ich obracanie się po dnie to:",
+        "options": ["Wleczenie", "Toczenie", "Saltacja", "Faza rozpuszczona"],
+        "correctAnswer": "Toczenie",
+        "explanation": "Grafika na slajdzie 79 przedstawia toczenie jako obracanie się okruchów po dnie.",
+        "slideReference": "Slajd 79"
+    },
+    {
+        "question": "Transport materiału w korycie rzeki polegający na przemieszczaniu drobniejszych ziaren skokami nad dnem to:",
+        "options": ["Wleczenie", "Toczenie", "Saltacja", "Zawiesina"],
+        "correctAnswer": "Saltacja",
+        "explanation": "Grafika na slajdzie 79 przedstawia saltację jako przemieszczanie ziaren skokami nad dnem.",
+        "slideReference": "Slajd 79"
+    },
+    {
+        "question": "Transport najdrobniejszych cząstek (ił, pył) unoszonych w toni wodnej, często przez turbulencje, to:",
+        "options": ["Wleczenie", "Saltacja", "Faza rozpuszczona", "Zawiesina"],
+        "correctAnswer": "Zawiesina",
+        "explanation": "Grafika na slajdzie 79 przedstawia zawiesinę jako unoszenie najdrobniejszych cząstek w toni wodnej.",
+        "slideReference": "Slajd 79"
+    },
+    {
+        "question": "Erozja polegająca na żłobieniu dna rzeki, zarówno w skałach podłoża, jak i w aluwiach, której czynnikami są abrazja, eworsja i kawitacja, to:",
+        "options": ["Erozja boczna", "Erozja denna (wgłębna)", "Erozja wsteczna", "Erozja eoliczna"],
+        "correctAnswer": "Erozja denna (wgłębna)",
+        "explanation": "Slajd 80 definiuje erozję denną (wgłębną) jako żłobienie dna rzeki.",
+        "slideReference": "Slajd 80"
+    },
+    {
+        "question": "Erozja polegająca na podcinaniu brzegów rzeki, prowadząca do poszerzania doliny i powstawania meandrów oraz starorzeczy, to:",
+        "options": ["Erozja denna", "Erozja wsteczna", "Erozja boczna", "Erozja lodowcowa"],
+        "correctAnswer": "Erozja boczna",
+        "explanation": "Slajd 81 (i grafiki) ilustruje erozję boczną jako proces prowadzący do powstawania meandrów i starorzeczy.",
+        "slideReference": "Slajd 81"
+    },
+    {
+        "question": "Erozja polegająca na cofaniu się wodospadów, progów i załomów skalnych, co prowadzi do wydłużania doliny w górę rzeki, to:",
+        "options": ["Erozja denna", "Erozja boczna", "Erozja wsteczna", "Abrazja"],
+        "correctAnswer": "Erozja wsteczna",
+        "explanation": "Slajd 82 definiuje erozję wsteczną jako cofanie się wodospadów i progów, prowadzące do wydłużania doliny w górę rzeki.",
+        "slideReference": "Slajd 82"
+    },
+    {
+        "question": "Proces przejęcia odcinka innej rzeki przez rzekę silniej erodującą wstecznie to:",
+        "options": ["Meandrowanie", "Aluwializacja", "Kaptaż", "Denudacja"],
+        "correctAnswer": "Kaptaż",
+        "explanation": "Slajd 83 definiuje kaptaż jako przejęcie odcinka innej rzeki w wyniku erozji wstecznej.",
+        "slideReference": "Slajd 83"
+    },
+    {
+        "question": "Stare dno rzeki, które zostało rozcięte przez erozję po obniżeniu bazy erozyjnej, tworzące płaską powierzchnię wyniesioną powyżej aktualnego poziomu rzeki, to:",
+        "options": ["Równia zalewowa", "Koryto przelewowe", "Terasa rzeczna", "Stożek napływowy"],
+        "correctAnswer": "Terasa rzeczna",
+        "explanation": "Slajd 84 definiuje terasę rzeczną jako stare dno rzeki, rozcięte przez erozję po obniżeniu bazy erozyjnej.",
+        "slideReference": "Slajd 84"
+    },
+    {
+        "question": "Jak nazywamy osady rzeczne?",
+        "options": ["Moreny", "Lessy", "Aluwia", "Utwory piroklastyczne"],
+        "correctAnswer": "Aluwia",
+        "explanation": "Slajd 85 stwierdza, że osady rzeczne nazywamy aluwiami.",
+        "slideReference": "Slajd 85"
+    },
+    {
+        "question": "Osady składane na dnie koryta rzeki to aluwia:",
+        "options": ["Pozakorytowe", "Korytowe", "Zalewowe", "Deltowe"],
+        "correctAnswer": "Korytowe",
+        "explanation": "Slajd 85 definiuje aluwia korytowe jako osady składane na dnie koryta rzeki.",
+        "slideReference": "Slajd 85"
+    },
+    {
+        "question": "Osady osadzane poza korytem, w równiach zalewowych, to aluwia:",
+        "options": ["Korytowe", "Denne", "Pozakorytowe", "Abisyalne"],
+        "correctAnswer": "Pozakorytowe",
+        "explanation": "Slajd 85 definiuje aluwia pozakorytowe jako osady osadzane poza korytem, w równiach zalewowych.",
+        "slideReference": "Slajd 85"
+    },
+    {
+        "question": "Drobne, faliste struktury na powierzchni osadu, tworzące się pod wpływem nurtu wody o niskiej energii, to:",
+        "options": ["Krewasy", "Łachy", "Ripplemarki (zmarszczki prądowe)", "Wały brzegowe"],
+        "correctAnswer": "Ripplemarki (zmarszczki prądowe)",
+        "explanation": "Slajd 87 definiuje ripplemarki (zmarszczki prądowe) jako drobne, faliste struktury na powierzchni osadu.",
+        "slideReference": "Slajd 87"
+    },
+    {
+        "question": "Niewielkie, nieregularne formy osadów rzecznych powstające na skutek zmiennego przepływu wody, to:",
+        "options": ["Ripplemarki", "Krewasy", "Łachy", "Deltowe osady"],
+        "correctAnswer": "Krewasy",
+        "explanation": "Slajd 87 definiuje krewasy jako niewielkie, nieregularne formy osadów rzecznych.",
+        "slideReference": "Slajd 87"
+    },
+    {
+        "question": "Piaszczyste lub żwirowe wyniesienia w korycie rzeki, tworzące się tam, gdzie prędkość wody maleje, to:",
+        "options": ["Wały brzegowe", "Krewasy", "Łachy", "Terasy rzeczne"],
+        "correctAnswer": "Łachy",
+        "explanation": "Slajd 87 definiuje łachy jako piaszczyste lub żwirowe wyniesienia w korycie rzeki.",
+        "slideReference": "Slajd 87"
+    },
+    {
+        "question": "Podłużne wyniesienie wzdłuż brzegów rzeki, tworzące się wskutek osadzania materiału podczas wezbrań, to:",
+        "options": ["Koryto przelewowe", "Łacha", "Basen powodziowy", "Wał brzegowy"],
+        "correctAnswer": "Wał brzegowy",
+        "explanation": "Slajd 87 definiuje wał brzegowy jako podłużne wyniesienie wzdłuż brzegów rzeki, powstałe podczas wezbrań.",
+        "slideReference": "Slajd 87"
+    },
+    {
+        "question": "Płaski teren wzdłuż rzeki, okresowo zalewany, na którym osadzają się muły i iły, to:",
+        "options": ["Terasa rzeczna", "Basen powodziowy", "Równina zalewowa", "Stożek napływowy"],
+        "correctAnswer": "Równina zalewowa",
+        "explanation": "Slajd 87 definiuje równinę zalewową jako płaski teren wzdłuż rzeki, okresowo zalewany.",
+        "slideReference": "Slajd 87"
+    },
+    {
+        "question": "Forma ujścia rzeki do zbiornika wodnego, gdzie prędkość rzeki spada i osady zostają zdeponowane, tworząc charakterystyczną strukturę, to:",
+        "options": ["Estuarium", "Delta", "Przełom rzeczny", "Meander"],
+        "correctAnswer": "Delta",
+        "explanation": "Slajd 88 opisuje delty jako formy powstające przy ujściu rzek do zbiorników wodnych w wyniku depozycji osadów.",
+        "slideReference": "Slajd 88"
+    },
+    {
+        "question": "Górna część delty, znajdująca się powyżej poziomu morza, przecinana przez koryta rozprowadzające, to:",
+        "options": ["Skłon delty (czoło delty)", "Prodelta", "Równia deltowa", "Basen deltowy"],
+        "correctAnswer": "Równia deltowa",
+        "explanation": "Slajd 88 opisuje równię deltową jako górną część delty, znajdującą się powyżej poziomu morza.",
+        "slideReference": "Slajd 88"
+    },
+    {
+        "question": "Główne kryterium klasyfikacyjne delt to udział procesów kształtujących deltę, takich jak:",
+        "options": ["Tylko rzeka", "Rzeka, falowanie i pływy", "Tylko falowanie i pływy", "Temperatura wody i zasolenie"],
+        "correctAnswer": "Rzeka, falowanie i pływy",
+        "explanation": "Slajd 88 podaje, że główne kryterium klasyfikacyjne delt to udział procesów kształtujących: rzeki, falowania i pływów.",
+        "slideReference": "Slajd 88"
+    },
+    {
+        "question": "Obszar, w którym rzeka łączy się z morzem lub oceanem, charakteryzujący się zmiennością słoności wody w zależności od pływów i mieszaniem się wód słodkich ze słonymi, to:",
+        "options": ["Delta", "Zatoka lagunowa", "Estuarium", "Fiord"],
+        "correctAnswer": "Estuarium",
+        "explanation": "Slajd 89 definiuje estuarium jako obszar przejściowy, gdzie rzeka łączy się z morzem/oceanem, z mieszaniem się wód i zmienną słonością.",
+        "slideReference": "Slajd 89"
+    },
+    {
+        "question": "Jedno z większych estuariów w Europie, znajdujące się w południowo-zachodniej Francji, to:",
+        "options": ["Estuarium Tamizy", "Estuarium Żyrondy", "Estuarium Łaby", "Estuarium Odry"],
+        "correctAnswer": "Estuarium Żyrondy",
+        "explanation": "Slajd 89 wymienia estuarium Żyrondy jako jedno z większych w Europie.",
+        "slideReference": "Slajd 89"
+    },
+    {
+        "question": "Proces przemiany śniegu w firn, a następnie w lód lodowcowy, zachodzący powyżej granicy wiecznego śniegu, to etap powstawania:",
+        "options": ["Rzeki lodowcowej", "Lodowców górskich", "Moreny dennej", "Sandru"],
+        "correctAnswer": "Lodowców górskich",
+        "explanation": "Slajd 91 (grafika) ilustruje proces powstawania lodowców górskich, zaczynając od zalegającego śniegu, przez firn, do lodu lodowcowego.",
+        "slideReference": "Slajd 91"
+    },
+    {
+        "question": "Typ lodowca górskiego, który wypełnia cyrk lodowcowy i ma niewielkie rozmiary, to lodowiec:",
+        "options": ["Alpejski (dolinny)", "Himalajski (dendrytyczny)", "Pirenejski (karowy, cyrkowy)", "Piedmontowy (przedgórski)"],
+        "correctAnswer": "Pirenejski (karowy, cyrkowy)",
+        "explanation": "Slajd 92 przedstawia lodowiec pirenejski (karowy, cyrkowy) jako typ wypełniający cyrk lodowcowy.",
+        "slideReference": "Slajd 92"
+    },
+    {
+        "question": "Typ lodowca górskiego składający się z wielu jęzorów lodowcowych zasilanych z rozległych pól firnowych, łączących się w główny jęzor, to lodowiec:",
+        "options": ["Alpejski (dolinny)", "Himalajski (dendrytyczny)", "Norweski (fieldowy)", "Piedmontowy (przedgórski)"],
+        "correctAnswer": "Himalajski (dendrytyczny)",
+        "explanation": "Slajd 92 ilustruje lodowiec himalajski (dendrytyczny) jako system wielu łączących się jęzorów.",
+        "slideReference": "Slajd 92"
+    },
+    {
+        "question": "Rozległe, płaskie pokrywy lodowe występujące na obszarach polarnych i subpolarnych, z których mogą wypływać lodowce wyprowadzające, to:",
+        "options": ["Lodowce fieldowe", "Czapy lodowe", "Lodowce szelfowe", "Lodowce piedmontowe"],
+        "correctAnswer": "Czapy lodowe",
+        "explanation": "Slajd 93 przedstawia czapy lodowe jako rozległe pokrywy lodowe.",
+        "slideReference": "Slajd 93"
+    },
+    {
+        "question": "Część lądolodu lub czapy lodowej spływająca do morza i unosząca się na wodzie, to:",
+        "options": ["Lodowiec wyprowadzający", "Lodowiec fieldowy", "Lodowiec szelfowy", "Góra lodowa"],
+        "correctAnswer": "Lodowiec szelfowy",
+        "explanation": "Slajd 93 definiuje i ilustruje lodowce szelfowe jako część lądolodu unoszącą się na wodzie morskiej.",
+        "slideReference": "Slajd 93"
+    },
+    {
+        "question": "Wyrywanie z podłoża dużych bloków skalnych przez lodowiec i ich przenoszenie to proces erozji glacjalnej nazywany:",
+        "options": ["Detersja", "Egzaracja", "Detrakcja", "Abrazja"],
+        "correctAnswer": "Detrakcja",
+        "explanation": "Slajd 94 definiuje detrakcję jako wyrywanie i przenoszenie bloków skalnych przez lodowiec.",
+        "slideReference": "Slajd 94"
+    },
+    {
+        "question": "Zdzieranie materiału skalnego z podłoża przez czoło lodowca (lądolodu) i jego wciąganie w głąb lodu to proces erozji glacjalnej nazywany:",
+        "options": ["Detrakcja", "Detersja", "Egzaracja", "Korazja"],
+        "correctAnswer": "Egzaracja",
+        "explanation": "Slajd 94 definiuje egzarację jako zdzieranie materiału przez czoło lodowca i jego wciąganie w lód.",
+        "slideReference": "Slajd 94"
+    },
+    {
+        "question": "Pagórek lub masyw skalny o charakterystycznym kształcie – z jednej strony wygładzony (od strony nasuwania się lodowca), a z drugiej stromy i poszarpany (od strony oddalania się lodowca) – to:",
+        "options": ["Drumlin", "Kem", "Muton (baraniec)", "Oz"],
+        "correctAnswer": "Muton (baraniec)",
+        "explanation": "Slajd 95 opisuje muton (baraniec) jako pagórek skalny o asymetrycznym kształcie, uformowany przez lodowiec.",
+        "slideReference": "Slajd 95"
+    },
+    {
+        "question": "Charakterystyczna forma doliny górskiej przekształconej przez lodowiec, o szerokim, płaskim dnie i stromych zboczach, to:",
+        "options": ["Dolina V-kształtna", "Dolina U-kształtna (polodowcowa)", "Kanion", "Jar"],
+        "correctAnswer": "Dolina U-kształtna (polodowcowa)",
+        "explanation": "Slajd 96 opisuje dolinę U-kształtną (polodowcową) jako formę powstałą w wyniku przekształcenia doliny V-kształtnej przez lodowiec.",
+        "slideReference": "Slajd 96"
+    },
+    {
+        "question": "Widoczne zarysowania, bruzdy i zadziory na powierzchni skał, powstałe w wyniku tarcia materiału skalnego niesionego przez lodowiec, to:",
+        "options": ["Spękania ciosowe", "Szczeliny lodowcowe", "Rysy i wygłady lodowcowe", "Gołoborza"],
+        "correctAnswer": "Rysy i wygłady lodowcowe",
+        "explanation": "Slajd 97 (i 98) opisuje rysy i wygłady lodowcowe jako zarysowania na powierzchni skał, będące efektem działalności lodowca.",
+        "slideReference": "Slajd 97, 98"
+    },
+    {
+        "question": "Półkoliste lub owalne zagłębienie w górach, otoczone z trzech stron stromymi ścianami skalnymi, stanowiące miejsce gromadzenia się śniegu i powstawania lodowca karowego, to:",
+        "options": ["Dolina U-kształtna", "Morena boczna", "Cyrk lodowcowy (kar lodowcowy)", "Muton"],
+        "correctAnswer": "Cyrk lodowcowy (kar lodowcowy)",
+        "explanation": "Slajd 99 przedstawia cyrk lodowcowy jako miejsce powstawania lodowca karowego.",
+        "slideReference": "Slajd 99"
+    },
+    {
+        "question": "Materiał skalny transportowany przez lodowiec, pochodzący z podłoża lodowca (np. erozja, włączanie w lód), to materiał ze źródła:",
+        "options": ["Supraglacjalnego", "Inglacjalnego", "Subglacjalnego", "Eolicznego"],
+        "correctAnswer": "Subglacjalnego",
+        "explanation": "Slajd 100 definiuje źródło subglacjalne jako materiał pochodzący z erozji podłoża lodowca.",
+        "slideReference": "Slajd 100"
+    },
+    {
+        "question": "Materiał skalny opadający na powierzchnię lodowca ze zboczy dolin i stoków gór, dostarczany drogą eoliczną lub przez lawiny, to materiał ze źródła:",
+        "options": ["Subglacjalnego", "Inglacjalnego", "Supraglacjalnego", "Fluwioglacjalnego"],
+        "correctAnswer": "Supraglacjalnego",
+        "explanation": "Slajd 100 definiuje źródło supraglacjalne jako materiał opadający na powierzchnię lodowca.",
+        "slideReference": "Slajd 100"
+    },
+    {
+        "question": "Wał materiału skalnego (głazów, okruchów) ciągnący się po obu bokach jęzora lodowca górskiego, to:",
+        "options": ["Morena denna", "Morena czołowa", "Morena boczna", "Morena środkowa"],
+        "correctAnswer": "Morena boczna",
+        "explanation": "Slajd 101 opisuje morenę boczną jako wał materiału skalnego po bokach jęzora lodowca.",
+        "slideReference": "Slajd 101"
+    },
+    {
+        "question": "Materiał skalny (bloki, głazy, piaski, pyły) nagromadzony i transportowany na powierzchni lodowca to:",
+        "options": ["Morena wewnętrzna", "Morena denna", "Morena powierzchniowa", "Morena ablacyjna"],
+        "correctAnswer": "Morena powierzchniowa",
+        "explanation": "Slajd 101 opisuje morenę powierzchniową jako materiał transportowany na powierzchni lodowca.",
+        "slideReference": "Slajd 101"
+    },
+    {
+        "question": "Morena powstająca z połączenia moren bocznych dwóch zbiegających się jęzorów lodowcowych to:",
+        "options": ["Morena czołowa", "Morena denna", "Morena środkowa", "Morena recesyjna"],
+        "correctAnswer": "Morena środkowa",
+        "explanation": "Slajd 102 opisuje morenę środkową jako powstającą z połączenia moren bocznych.",
+        "slideReference": "Slajd 102"
+    },
+    {
+        "question": "Materiał skalny transportowany przy dnie lodowca, który po stopnieniu lodowca tworzy lekko faliste równiny, to:",
+        "options": ["Morena czołowa", "Morena boczna", "Morena denna", "Morena środkowa"],
+        "correctAnswer": "Morena denna",
+        "explanation": "Slajd 102 (i 115) opisuje morenę denną jako materiał transportowany przy dnie, tworzący po stopnieniu lodowca faliste równiny.",
+        "slideReference": "Slajd 102, 115"
+    },
+    {
+        "question": "Wał materiału skalnego usypywany lub spiętrzany przed czołem lodowca, wyznaczający jego maksymalny zasięg lub etapy postoju, to:",
+        "options": ["Morena denna", "Morena boczna", "Morena środkowa", "Morena czołowa (końcowa)"],
+        "correctAnswer": "Morena czołowa (końcowa)",
+        "explanation": "Slajd 102 (i 114) opisuje morenę czołową jako wał usypywany przed czołem lodowca.",
+        "slideReference": "Slajd 102, 114"
+    },
+    {
+        "question": "Duża skała, często o wielkiej masie, przetransportowana przez lądolód na znaczne odległości i pozostawiona w miejscu wytopienia, to:",
+        "options": ["Muton", "Drumlin", "Eratyk (głaz narzutowy)", "Kem"],
+        "correctAnswer": "Eratyk (głaz narzutowy)",
+        "explanation": "Slajd 103 definiuje eratyk (głaz narzutowy) jako dużą skałę przetransportowaną przez lądolód.",
+        "slideReference": "Slajd 103"
+    },
+    {
+        "question": "Osady lodowcowe składające się głównie z glin morenowych to:",
+        "options": ["Osady glacjofluwialne", "Osady lodowcowe (sensu stricto)", "Osady glacjojeziorne", "Osady glacjalnomorskie"],
+        "correctAnswer": "Osady lodowcowe (sensu stricto)",
+        "explanation": "Slajd 104 wymienia gliny morenowe jako osady lodowcowe (inaczej lodowcowe).",
+        "slideReference": "Slajd 104"
+    },
+    {
+        "question": "Osady wód roztopowych lodowca, składające się głównie ze żwirów i piasków, to:",
+        "options": ["Osady lodowcowe", "Osady glacjojeziorne", "Osady glacjofluwialne (fluwioglacjalne)", "Osady eoliczne"],
+        "correctAnswer": "Osady glacjofluwialne (fluwioglacjalne)",
+        "explanation": "Slajd 104 wymienia żwiry i piaski jako osady glacjofluwialne/fluwioglacjalne.",
+        "slideReference": "Slajd 104"
+    },
+    {
+        "question": "Osady jezior lodowcowych, składające się głównie z mułków i iłów, to:",
+        "options": ["Osady lodowcowe", "Osady glacjofluwialne", "Osady glacjalnomorskie", "Osady glacjojeziorne"],
+        "correctAnswer": "Osady glacjojeziorne",
+        "explanation": "Slajd 104 wymienia mułki i iły jako osady glacjojeziorne.",
+        "slideReference": "Slajd 104"
+    },
+    {
+        "question": "Rzeźba terenu charakteryzująca się słabo zachowanymi, zdenudowanymi formami glacjalnymi i fluwioglacjalnymi, z dominacją równin moreny dennej i pradolin, to rzeźba:",
+        "options": ["Młodoglacjalna", "Staroglacjalna", "Peryglacjalna", "Wulkaniczna"],
+        "correctAnswer": "Staroglacjalna",
+        "explanation": "Tabela na slajdzie 107 charakteryzuje rzeźbę staroglacjalną jako mającą częściowo lub całkowicie zdenudowane formy i dominację równin moreny dennej oraz pradolin.",
+        "slideReference": "Slajd 107"
+    },
+    {
+        "question": "Rzeźba terenu charakteryzująca się dobrze zachowanymi i wyraźnymi formami glacjalnymi i fluwioglacjalnymi, takimi jak wzniesienia moren czołowych, kemy, ozy, drumliny, pradoliny i liczne jeziora rynnowe oraz morenowe, to rzeźba:",
+        "options": ["Staroglacjalna", "Pustynna", "Krasowa", "Młodoglacjalna"],
+        "correctAnswer": "Młodoglacjalna",
+        "explanation": "Tabela na slajdzie 107 charakteryzuje rzeźbę młodoglacjalną jako mającą dobrze zachowane i wyraźne formy polodowcowe.",
+        "slideReference": "Slajd 107"
+    },
+    {
+        "question": "Pojedynczy, z reguły niewysoki pagórek piaszczysto-żwirowy, powstający w szczelinach lodowcowych, gdzie gromadziła się woda z topniejącego lądolodu i deponowała luźny materiał skalny, to:",
+        "options": ["Oz", "Drumlin", "Kem", "Morena denna"],
+        "correctAnswer": "Kem",
+        "explanation": "Slajd 108 definiuje kem jako pojedynczy pagórek piaszczysto-żwirowy powstający w szczelinach lodowcowych.",
+        "slideReference": "Slajd 108"
+    },
+    {
+        "question": "Wydłużony, często na wiele kilometrów, niezbyt wysoki pagórek utworzony z piasku i żwiru przez wody biegnące pod lądolodem w jego szczelinach lub tunelach, to:",
+        "options": ["Kem", "Drumlin", "Morena boczna", "Oz"],
+        "correctAnswer": "Oz",
+        "explanation": "Slajd 109 definiuje oz jako wydłużony pagórek piaszczysto-żwirowy utworzony przez wody podlodowcowe.",
+        "slideReference": "Slajd 109"
+    },
+    {
+        "question": "Ozy powstałe w wyniku działania wód topniejących na powierzchni lądolodu, tworzące wały wzdłuż krawędzi lodowca, to ozy:",
+        "options": ["Inglacjalne", "Subglacjalne", "Supraglacjalne", "Boczne"],
+        "correctAnswer": "Supraglacjalne",
+        "explanation": "Slajd 109 definiuje ozy supraglacjalne jako powstałe na powierzchni lądolodu.",
+        "slideReference": "Slajd 109"
+    },
+    {
+        "question": "Rozległa, równinna, piaszczysta lub żwirowa forma terenu utworzona na przedpolu topniejącego lądolodu ze spływających z niego wód, tuż przed pradoliną, to:",
+        "options": ["Morena denna", "Pradolina", "Wysoczyzna morenowa", "Sandr (równina sandrowa)"],
+        "correctAnswer": "Sandr (równina sandrowa)",
+        "explanation": "Slajd 110 definiuje sandr jako rozległą, równinną formę piaszczysto-żwirową utworzoną na przedpolu lądolodu.",
+        "slideReference": "Slajd 110"
+    },
+    {
+        "question": "Wydłużone (czasami elipsoidalne) pagórki o długościach 100-1000 m, zbudowane z materiału morenowego (głazów, piasków, glin), których ułożenie odpowiada biegowi podłużnych szczelin lodowych i kierunkom ruchu lodu, to:",
+        "options": ["Kemy", "Ozy", "Drumliny", "Moreny czołowe"],
+        "correctAnswer": "Drumliny",
+        "explanation": "Slajd 111 opisuje drumliny jako wydłużone pagórki z materiału morenowego, zorientowane zgodnie z ruchem lodu.",
+        "slideReference": "Slajd 111"
+    },
+    {
+        "question": "Podłużne zagłębienie, utworzone przez wody płynące pod topniejącym lądolodem pod dużym ciśnieniem, często wypełnione wodą tworząc jeziora, to:",
+        "options": ["Pradolina", "Dolina U-kształtna", "Rynna polodowcowa", "Dolina zawieszona"],
+        "correctAnswer": "Rynna polodowcowa",
+        "explanation": "Slajd 112 definiuje rynnę polodowcową jako podłużne zagłębienie utworzone przez wody płynące pod lądolodem pod ciśnieniem.",
+        "slideReference": "Slajd 112"
+    },
+    {
+        "question": "Dawna dolina rzeki płynącej przed czołem topniejącego lądolodu, wzdłuż jego czoła (poprzecznie do kierunku nasuwania lądolodu), odprowadzająca wody z topniejącego lądolodu do morza, to:",
+        "options": ["Rynna polodowcowa", "Dolina sandrowa", "Pradolina", "Dolina przełomowa"],
+        "correctAnswer": "Pradolina",
+        "explanation": "Slajd 113 definiuje pradolinę jako dawną dolinę rzeki płynącej przed czołem lądolodu, odprowadzającą jego wody.",
+        "slideReference": "Slajd 113"
+    },
+    {
+        "question": "Jeziora polodowcowe powstałe w obniżeniach pomiędzy morenami czołowymi, zazwyczaj płytkie i rozległe (np. Śniardwy, Mamry), to jeziora:",
+        "options": ["Rynnowe", "Morenowe", "Krasowe", "Tektoniczne"],
+        "correctAnswer": "Morenowe",
+        "explanation": "Slajd 118 (Bank słówek) opisuje jeziora morenowe jako powstałe w obniżeniach między morenami czołowymi.",
+        "slideReference": "Slajd 118"
+    },
+    {
+        "question": "Jeziora polodowcowe powstałe w rynnach polodowcowych (rzeźbionych przez wody subglacjalne), zazwyczaj długie, kręte i głębokie (np. Hańcza, Gopło), to jeziora:",
+        "options": ["Morenowe", "Sandrowe", "Rynnowe", "Cyrkowe"],
+        "correctAnswer": "Rynnowe",
+        "explanation": "Slajd 118 (Bank słówek) opisuje jeziora rynnowe jako powstałe w rynnach polodowcowych.",
+        "slideReference": "Slajd 118"
+    },
+    {
+        "question": "Nagłe uwolnienie wody z jeziora lodowcowego, mogące prowadzić do megapowodzi lodowcowej, to zjawisko określane skrótem:",
+        "options": ["LAHAR", "TSUNAMI", "GLOF", "JÖKULHLAUP"],
+        "correctAnswer": "GLOF",
+        "explanation": "Slajd 119 definiuje GLOF (glacial lake outburst flood) jako powodzie lodowcowe/glacjalne.",
+        "slideReference": "Slajd 119"
+    },
+    {
+        "question": "Strefa przyległa do obszarów objętych lodowcem/lądolodem w zimnym klimacie polarnym, wraz z procesami wynikającymi z tego położenia, to:",
+        "options": ["Strefa glacjalna", "Strefa peryglacjalna", "Strefa subpolarna", "Strefa tundry"],
+        "correctAnswer": "Strefa peryglacjalna",
+        "explanation": "Slajd 121 definiuje strefę peryglacjalną jako strefę przyległą do obszarów zlodowaconych w zimnym klimacie.",
+        "slideReference": "Slajd 121"
+    },
+    {
+        "question": "Gdzie obecnie występuje peryglacjał?",
+        "options": ["Tylko na Antarktydzie", "W sąsiedztwie lądolodów np. Grenlandii czy Antarktydy, oraz na obszarach wysokogórskich", "Na wszystkich kontynentach poza Afryką", "Tylko w strefie umiarkowanej"],
+        "correctAnswer": "W sąsiedztwie lądolodów np. Grenlandii czy Antarktydy, oraz na obszarach wysokogórskich",
+        "explanation": "Slajd 121 wskazuje, że peryglacjał występuje obecnie w sąsiedztwie lądolodów oraz na obszarach wysokogórskich.",
+        "slideReference": "Slajd 121"
+    },
+    {
+        "question": "Która z wymienionych cech NIE jest charakterystyczna dla klimatu peryglacjalnego?",
+        "options": ["Bardzo niskie średnie roczne temperatury (zwykle poniżej 0°C)", "Duże amplitudy temperatury (sezonowe i dobowe)", "Obfite opady atmosferyczne (powyżej 1000 mm/rok)", "Silne i suche wiatry"],
+        "correctAnswer": "Obfite opady atmosferyczne (powyżej 1000 mm/rok)",
+        "explanation": "Slajd 122 wymienia niskie opady atmosferyczne (zwykle <250 mm/rok) jako cechę klimatu peryglacjalnego.",
+        "slideReference": "Slajd 122"
+    },
+    {
+        "question": "Warstwa przemarzniętego gruntu, występująca przez przynajmniej dwa lata w warunkach temperatury <0°C, to:",
+        "options": ["Lód denny", "Pokrywa śnieżna", "Permafrost (wieloletnia zmarzlina)", "Gleba tundrowa"],
+        "correctAnswer": "Permafrost (wieloletnia zmarzlina)",
+        "explanation": "Slajd 123 definiuje permafrost jako warstwę przemarzniętego gruntu występującą przez przynajmniej dwa lata w temp. <0°C.",
+        "slideReference": "Slajd 123"
+    },
+    {
+        "question": "Jak nazywa się górna część wieloletniej zmarzliny, która corocznie rozmarza latem i zamarza zimą?",
+        "options": ["Talik", "Warstwa czynna", "Klin lodowy", "Pingo"],
+        "correctAnswer": "Warstwa czynna",
+        "explanation": "Slajd 124 definiuje warstwę czynną jako górną część wieloletniej zmarzliny, która corocznie rozmarza i zamarza.",
+        "slideReference": "Slajd 124"
+    },
+    {
+        "question": "Obszary nieprzemarznięte występujące w obrębie zmarzliny, często pod dolinami rzecznymi lub jeziorami, to:",
+        "options": ["Kliny lodowe", "Soczewki lodu", "Taliki", "Pingo"],
+        "correctAnswer": "Taliki",
+        "explanation": "Slajd 124 definiuje taliki jako obszary nieprzemarznięte występujące w obrębie zmarzliny.",
+        "slideReference": "Slajd 124"
+    },
+    {
+        "question": "Kopiec lub pagórek o wysokości do 70 m, składający się z warstwy gleby nad jądrem lodowym, powstający w wyniku zamarzania wód gruntowych na obszarach permafrostu, to:",
+        "options": ["Palsa", "Kem", "Drumlin", "Pingo"],
+        "correctAnswer": "Pingo",
+        "explanation": "Slajd 125 definiuje pingo jako kopiec lub pagórek z jądrem lodowym na obszarach permafrostu.",
+        "slideReference": "Slajd 125"
+    },
+    {
+        "question": "Pingo powstające w wyniku zamarzania wód gruntowych w głębokich jeziorach tundrowych to pingo typu:",
+        "options": ["Otwartego", "Mackenzie (zamknięte)", "Syberyjskiego", "Alaskijskiego"],
+        "correctAnswer": "Mackenzie (zamknięte)",
+        "explanation": "Slajd 125 opisuje pingo typu Mackenzie (zamknięte) jako powstające w wyniku zamarzania wód w głębokich jeziorach tundrowych.",
+        "slideReference": "Slajd 125"
+    },
+    {
+        "question": "Pingo tworzące się przez dostawę wód artezyjskich pod ciśnieniem między stokiem górskim a dnem doliny to pingo:",
+        "options": ["Systemu zamkniętego", "Systemu otwartego", "Typu Mackenzie", "Palsy"],
+        "correctAnswer": "Systemu otwartego",
+        "explanation": "Slajd 125 opisuje pingo systemu otwartego jako tworzące się przez dostawę wód artezyjskich.",
+        "slideReference": "Slajd 125"
+    },
+    {
+        "question": "Proces powstawania pęknięć w materiałach skalnych lub glebowych w wyniku cyklicznych zmian temperatury poniżej 0°C i zamarzania wody w szczelinach to:",
+        "options": ["Rozklinowanie mrozowe", "Pękanie mrozowe", "Sortowanie mrozowe", "Pęcznienie mrozowe"],
+        "correctAnswer": "Pękanie mrozowe",
+        "explanation": "Slajd 126 definiuje pękanie mrozowe jako proces powstawania pęknięć w wyniku cyklicznych zmian temperatury i zamarzania wody.",
+        "slideReference": "Slajd 126"
+    },
+    {
+        "question": "Proces tworzenia szczelin i pęknięć w skałach spowodowany naprężeniami wywołanymi przez zamarzającą wodę, występujący w wyniku różnic temperatury między dniem a nocą, to:",
+        "options": ["Pękanie mrozowe", "Sortowanie mrozowe", "Rozklinowanie mrozowe", "Geliflukcja"],
+        "correctAnswer": "Rozklinowanie mrozowe",
+        "explanation": "Slajd 126 definiuje rozklinowanie mrozowe jako proces tworzenia szczelin i pęknięć spowodowany naprężeniami od zamarzającej wody.",
+        "slideReference": "Slajd 126"
+    },
+    {
+        "question": "Proces, w którym w wyniku pęcznienia mrozowego dochodzi do segregacji materiału – frakcje grubsze są wypychane ku powierzchni, a drobniejsze opadają na niższe poziomy, to:",
+        "options": ["Pęcznienie mrozowe", "Rozklinowanie mrozowe", "Sortowanie mrozowe", "Kongielflukcja"],
+        "correctAnswer": "Sortowanie mrozowe",
+        "explanation": "Slajd 127 definiuje sortowanie mrozowe jako proces segregacji materiału w wyniku pęcznienia mrozowego.",
+        "slideReference": "Slajd 127"
+    },
+    {
+        "question": "Proces, który zachodzi w wyniku zamarzania wody w glebie i wzrostu soczewek lodu segregacyjnego, prowadzący do podniesienia się gruntu, szczególnie jesienią, to:",
+        "options": ["Sortowanie mrozowe", "Termoerozja", "Pęcznienie mrozowe", "Krioplanacja"],
+        "correctAnswer": "Pęcznienie mrozowe",
+        "explanation": "Slajd 127 definiuje pęcznienie mrozowe jako proces podnoszenia się gruntu w wyniku zamarzania wody i wzrostu soczewek lodu.",
+        "slideReference": "Slajd 127"
+    },
+    {
+        "question": "Struktura peryglacjalna powstająca w wyniku cyklicznego zamarzania i rozmrażania gruntu, tworząca wąskie, pionowe szczeliny wypełnione materiałem osadowym (np. piaskiem), to:",
+        "options": ["Pingo", "Palsa", "Klin mrozowy", "Gleba poligonalna"],
+        "correctAnswer": "Klin mrozowy",
+        "explanation": "Slajd 129 definiuje klin mrozowy jako strukturę peryglacjalną powstającą w wyniku cyklicznego zamarzania i rozmrażania gruntu.",
+        "slideReference": "Slajd 129"
+    },
+    {
+        "question": "Kliny mrozowe powstające równolegle z osadami, w których występują, w trakcie procesu zamarzania wody gruntowej, gdzie wypełnienie pochodzi z materiału otaczających warstw, to kliny:",
+        "options": ["Epigenetyczne (poligenetyczne)", "Syngenetyczne", "Reliktowe", "Aktywne"],
+        "correctAnswer": "Syngenetyczne",
+        "explanation": "Slajd 129 definiuje kliny mrozowe syngenetyczne jako powstające równolegle z osadami.",
+        "slideReference": "Slajd 129"
+    },
+    {
+        "question": "Kliny mrozowe powstające w wyniku wtórnego zamarzania wód gruntowych w już istniejących osadach, gdzie wypełnienie może różnić się od materiału otaczających warstw, to kliny:",
+        "options": ["Syngenetyczne", "Strukturalne", "Epigenetyczne (poligenetyczne)", "Pierwotne"],
+        "correctAnswer": "Epigenetyczne (poligenetyczne)",
+        "explanation": "Slajd 129 definiuje kliny mrozowe epigenetyczne (poligenetyczne) jako powstające w wyniku wtórnego zamarzania wód w istniejących osadach.",
+        "slideReference": "Slajd 129"
+    },
+    {
+        "question": "Charakterystyczne dla obszarów wiecznej marzłoci płaskie wieloboki (najczęściej cztero- lub pięciokąty) lub pierścienie na powierzchni terenu o niewielkim nachyleniu, powstające w wyniku wietrzenia peryglacjalnego, to:",
+        "options": ["Kliny mrozowe", "Pingo", "Gleby poligonalne", "Torfowiska aapa"],
+        "correctAnswer": "Gleby poligonalne",
+        "explanation": "Slajd 131 opisuje gleby poligonalne jako charakterystyczne dla obszarów wiecznej marzłoci wieloboki na powierzchni terenu.",
+        "slideReference": "Slajd 131"
+    },
+    {
+        "question": "Powolne grawitacyjne przemieszczanie zwietrzeliny nasiąkniętej wodą, pochodzącą z topnienia lodu gruntowego oraz śniegu, to:",
+        "options": ["Kongeliflukcja", "Geliflukcja", "Soliflukcja polarna", "Termoerozja"],
+        "correctAnswer": "Geliflukcja",
+        "explanation": "Slajd 132 definiuje geliflukcję jako powolne grawitacyjne przemieszczanie zwietrzeliny nasiąkniętej wodą z topnienia lodu i śniegu.",
+        "slideReference": "Slajd 132"
+    },
+    {
+        "question": "Spływ odmarzniętej warstwy po przemarzniętym podłożu, odbywający się w cyklu dobowym, to:",
+        "options": ["Geliflukcja", "Soliflukcja", "Kongeliflukcja", "Krioplanacja"],
+        "correctAnswer": "Kongeliflukcja",
+        "explanation": "Slajd 132 definiuje kongeliflukcję jako spływ odmarzniętej warstwy po przemarzniętym podłożu w cyklu dobowym.",
+        "slideReference": "Slajd 132"
+    },
+    {
+        "question": "Proces niszczenia zmarzniętego gruntu (permafrostu) pod wpływem ciepła, głównie z wód płynących, prowadzący do rozmarzania, osuwania i rozmywania brzegów rzek, to:",
+        "options": ["Krioturbacja", "Termokras", "Termoerozja", "Abrazja termiczna"],
+        "correctAnswer": "Termoerozja",
+        "explanation": "Slajd 133 definiuje termoerozję jako proces niszczenia permafrostu pod wpływem ciepła, głównie z wód płynących.",
+        "slideReference": "Slajd 133"
+    },
+    {
+        "question": "Produktem ścierania (korazji) przez wiatr w strefie peryglacjalnej są:",
+        "options": ["Wydmy paraboliczne", "Jardangi", "Graniaki", "Bruk deflacyjny"],
+        "correctAnswer": "Graniaki",
+        "explanation": "Slajd 134 stwierdza, że produktem ścierania (korazji) w strefie peryglacjalnej są graniaki.",
+        "slideReference": "Slajd 134"
+    },
+    {
+        "question": "Frakcja materiału, którą wiatr wywiewa głównie w strefie peryglacjalnej i która osadza się lokalnie lub na peryferiach strefy, tworząc pokrywy, to:",
+        "options": ["Piasek", "Żwir", "Less", "Głazy"],
+        "correctAnswer": "Less",
+        "explanation": "Slajd 134 wskazuje, że wiatr wywiewa głównie frakcję pylastą, która osadza się jako less.",
+        "slideReference": "Slajd 134"
+    },
+    {
+        "question": "Wydmy śródlądowe w Kampinoskim Parku Narodowym powstały głównie z:",
+        "options": ["Piasków morskich", "Piasków wulkanicznych", "Piasków rzecznych i sandrowych", "Pyłów lessowych"],
+        "correctAnswer": "Piasków rzecznych i sandrowych",
+        "explanation": "Slajd 135 podaje, że wydmy w Kampinoskim PN utworzone są głównie z piasków rzecznych i sandrowych.",
+        "slideReference": "Slajd 135"
+    },
+    {
+        "question": "Proces polegający na zaburzeniu równowagi termicznej w gruncie (zmian temperatury), prowadzący do zaniku lodu gruntowego i obniżenia się powierzchni terenu, to:",
+        "options": ["Soliflukcja", "Termoerozja", "Thermokarst (termokras)", "Krioplanacja"],
+        "correctAnswer": "Thermokarst (termokras)",
+        "explanation": "Slajd 136 definiuje thermokarst (termokras) jako proces prowadzący do zaniku lodu gruntowego i obniżenia powierzchni terenu.",
+        "slideReference": "Slajd 136"
+    },
+    {
+        "question": "Płaskodenne misy, niecki i wanny wytopiskowe o średnicy do 15 km, powstające w wyniku wytapiania się klinów i soczew lodowych, mogące tworzyć jeziora termokrasowe, to:",
+        "options": ["Pingo", "Polja krasowe", "Ałasy", "Kaldery"],
+        "correctAnswer": "Ałasy",
+        "explanation": "Slajd 137 definiuje ałasy jako płaskodenne misy i niecki wytopiskowe powstające z wytapiania lodu.",
+        "slideReference": "Slajd 137"
+    },
+    {
+        "question": "W chłodniejszych fazach późnego glacjału w Polsce dominowały procesy:",
+        "options": ["Fluwialne i związane z topnieniem wieloletniej zmarzliny", "Eoliczne: silne wiatry, wywiewanie i transport pyłu, akumulacja lessu, powstawanie wydm", "Intensywne wietrzenie chemiczne", "Rozwój bujnej roślinności"],
+        "correctAnswer": "Eoliczne: silne wiatry, wywiewanie i transport pyłu, akumulacja lessu, powstawanie wydm",
+        "explanation": "Slajd 138 wskazuje, że w chłodniejszych fazach późnego glacjału dominowały procesy eoliczne.",
+        "slideReference": "Slajd 138"
+    },
+    {
+        "question": "Formy rzeźby terenu takie jak kliny mrozowe, rzeźba poligonalna i formy po-pingo są dowodami na obecność:",
+        "options": ["Aktywności wulkanicznej", "Permafrostu w przeszłości geologicznej", "Zlodowacenia morskiego", "Intensywnego krasowienia"],
+        "correctAnswer": "Permafrostu w przeszłości geologicznej",
+        "explanation": "Slajd 139 wymienia te formy jako dowody na obecność permafrostu.",
+        "slideReference": "Slajd 139"
+    },
+    {
+        "question": "Jak nazywamy działalność rzeźbotwórczą wiatru?",
+        "options": ["Procesy fluwialne", "Procesy glacjalne", "Procesy eoliczne", "Procesy krasowe"],
+        "correctAnswer": "Procesy eoliczne",
+        "explanation": "Slajd 2 - Część 2 stwierdza, że działalność rzeźbotwórczą wiatru nazywamy procesami eolicznymi.",
+        "slideReference": "Slajd 2 - Część 2"
+    },
+    {
+        "question": "Od imienia jakiego greckiego boga pochodzi nazwa 'procesy eoliczne'?",
+        "options": ["Zeusa", "Posejdona", "Eola", "Hadesa"],
+        "correctAnswer": "Eola",
+        "explanation": "Slajd 2 - Część 2 informuje, że nazwa 'procesy eoliczne' nawiązuje do greckiego boga wiatru – Eola.",
+        "slideReference": "Slajd 2 - Część 2"
+    },
+    {
+        "question": "Który rodzaj transportu eolicznego polega na przenoszeniu najdrobniejszych ziaren piasku i pyłu (mniejszych od 0,07 mm) w zawieszeniu?",
+        "options": ["Pełzanie", "Saltacja", "Suspensja", "Trakcja"],
+        "correctAnswer": "Suspensja",
+        "explanation": "Slajd 3 - Część 2 definiuje suspensję jako transport najdrobniejszych ziaren (piasku i pyłu < 0,07 mm) w zawieszeniu.",
+        "slideReference": "Slajd 3 - Część 2"
+    },
+    {
+        "question": "Który rodzaj transportu eolicznego polega na skokowym przemieszczaniu ziaren piasku (głównie 0,07–0,5 mm)?",
+        "options": ["Pełzanie", "Saltacja", "Suspensja", "Repulsja"],
+        "correctAnswer": "Saltacja",
+        "explanation": "Slajd 3 - Część 2 definiuje saltację jako skokowe przemieszczanie ziaren piasku (głównie 0,07–0,5 mm).",
+        "slideReference": "Slajd 3 - Część 2"
+    },
+    {
+        "question": "Który rodzaj transportu eolicznego polega na pchaniu ziaren przez wiatr oraz przesuwaniu przez ziarna uderzające przy stałym kontakcie z podłożem (głównie ziarna 0,5–4mm)?",
+        "options": ["Saltacja", "Suspensja", "Toczenie", "Pełzanie"],
+        "correctAnswer": "Pełzanie",
+        "explanation": "Slajd 3 - Część 2 definiuje pełzanie jako pchanie i przesuwanie większych ziaren (0,5–4mm) przy stałym kontakcie z podłożem.",
+        "slideReference": "Slajd 3 - Część 2"
+    },
+    {
+        "question": "Proces wywiewania materiału skalnego z obszarów zbudowanych z luźnych skał przez wiatr to:",
+        "options": ["Korazja", "Abrazja", "Deflacja", "Akumulacja"],
+        "correctAnswer": "Deflacja",
+        "explanation": "Slajd 4 - Część 2 definiuje deflację jako wywiewanie materiału skalnego przez wiatr.",
+        "slideReference": "Slajd 4 - Część 2"
+    },
+    {
+        "question": "Pokrywa skalna zbudowana z większego materiału skalnego (głazy, żwir), która nie uległa deflacji ze względu na swój ciężar, podczas gdy materiał lżejszy został usunięty, to:",
+        "options": ["Niecka deflacyjna", "Bruk deflacyjny", "Jardang", "Grzyb skalny"],
+        "correctAnswer": "Bruk deflacyjny",
+        "explanation": "Slajd 5 - Część 2 definiuje bruk deflacyjny jako pokrywę z większego materiału skalnego, pozostałą po wywianiu lżejszego materiału.",
+        "slideReference": "Slajd 5 - Część 2"
+    },
+    {
+        "question": "Niszczenie powierzchni skalnej przez uderzające z dużą siłą okruchy skał niesione przez wiatr to:",
+        "options": ["Deflacja", "Korazja", "Eworsja", "Soliflukcja"],
+        "correctAnswer": "Korazja",
+        "explanation": "Slajd 6 - Część 2 definiuje korazję jako niszczenie powierzchni skalnej przez uderzające okruchy niesione wiatrem.",
+        "slideReference": "Slajd 6 - Część 2"
+    },
+    {
+        "question": "Fragment skalny posiadający kilka gładkich ścian o różnej orientacji, powstałych w wyniku ścierania i szlifowania przez ziarna mineralne niesione przez wiatr, to:",
+        "options": ["Jardang", "Grzyb skalny", "Graniak", "Muton"],
+        "correctAnswer": "Graniak",
+        "explanation": "Slajd 6 - Część 2 (grafika i opis) przedstawia graniak jako fragment skalny oszlifowany przez wiatr.",
+        "slideReference": "Slajd 6 - Część 2"
+    },
+    {
+        "question": "Wydłużone grzbiety skalne, o wysokości do kilkunastu metrów, wygładzone i o aerodynamicznym kształcie, powstające poprzez procesy korazji i deflacji, to:",
+        "options": ["Graniaki", "Grzyby skalne", "Jardangi", "Wydmy"],
+        "correctAnswer": "Jardangi",
+        "explanation": "Slajd 6 - Część 2 (grafika i opis) przedstawia jardangi jako wydłużone grzbiety skalne uformowane przez wiatr.",
+        "slideReference": "Slajd 6 - Część 2"
+    },
+    {
+        "question": "Forma skalna o charakterystycznym kształcie, gdzie dolna część jest silniej podcięta przez korazję niż górna, to:",
+        "options": ["Jardang", "Graniak", "Barchan", "Grzyb skalny"],
+        "correctAnswer": "Grzyb skalny",
+        "explanation": "Slajd 6 - Część 2 (grafika i opis) przedstawia grzyb skalny jako formę podciętą u podstawy przez korazję.",
+        "slideReference": "Slajd 6 - Część 2"
+    },
+    {
+        "question": "Który z czynników ZMNIEJSZA podatność podłoża na wywiewanie przez wiatr?",
+        "options": ["Mała wielkość ziaren (gruby pył, drobny piasek)", "Niska wilgotność podłoża", "Brak roślinności", "Duża wilgotność podłoża"],
+        "correctAnswer": "Duża wilgotność podłoża",
+        "explanation": "Slajd 7 - Część 2 wskazuje, że im większa wilgotność, tym mniejsza podatność materiału na wywiewanie.",
+        "slideReference": "Slajd 7 - Część 2"
+    },
+    {
+        "question": "Jak roślinność wpływa na procesy eoliczne?",
+        "options": ["Zwiększa siłę wiatru", "Chroni podłoże przed wywiewaniem materiału", "Przyspiesza korazję", "Nie ma żadnego wpływu"],
+        "correctAnswer": "Chroni podłoże przed wywiewaniem materiału",
+        "explanation": "Slajd 7 - Część 2 stwierdza, że roślinność chroni podłoże przed wywiewaniem materiału.",
+        "slideReference": "Slajd 7 - Część 2"
+    },
+    {
+        "question": "Najbardziej popularną formą powstałą dzięki budującej działalności wiatru są:",
+        "options": ["Graniaki", "Jardangi", "Wydmy", "Bruk deflacyjny"],
+        "correctAnswer": "Wydmy",
+        "explanation": "Slajd 8 - Część 2 podaje, że najbardziej popularną formą akumulacyjnej działalności wiatru są wydmy.",
+        "slideReference": "Slajd 8 - Część 2"
+    },
+    {
+        "question": "Typ wydmy powstający na obszarach równinnych, bez roślinności, gdzie głębsze podłoże jest zwięzłe, siła wiatru umiarkowana, a kierunek wiatru ustabilizowany, o charakterystycznych ramionach wysuniętych zgodnie z kierunkiem wiatru, to:",
+        "options": ["Wydma paraboliczna", "Wydma gwiaździsta", "Barchan", "Wydma poprzeczna"],
+        "correctAnswer": "Barchan",
+        "explanation": "Slajd 9 - Część 2 opisuje barchany jako wydmy o ramionach wysuniętych zgodnie z kierunkiem wiatru, powstające w określonych warunkach.",
+        "slideReference": "Slajd 9 - Część 2"
+    },
+    {
+        "question": "Który stok barchanu jest łagodny?",
+        "options": ["Stok zawietrzny", "Stok dowietrzny", "Oba stoki są jednakowo nachylone", "Stok boczny"],
+        "correctAnswer": "Stok dowietrzny",
+        "explanation": "Slajd 9 - Część 2 charakteryzuje stok dowietrzny barchanu jako łagodny.",
+        "slideReference": "Slajd 9 - Część 2"
+    },
+    {
+        "question": "Wydmy w postaci długiego wału o przebiegu równoległym do kierunku dominujących wiatrów, powstające często przez połączenie się barchanów, to:",
+        "options": ["Wydmy poprzeczne", "Wydmy paraboliczne", "Wydmy podłużne", "Wydmy gwiaździste"],
+        "correctAnswer": "Wydmy podłużne",
+        "explanation": "Slajd 10 - Część 2 opisuje wydmy podłużne jako długie wały równoległe do kierunku wiatru.",
+        "slideReference": "Slajd 10 - Część 2"
+    },
+    {
+        "question": "Wydmy (megaripple) o grzbietach wydłużonych w kierunku prostopadłym do kierunku wiatru, których strome stoki zawietrzne są zwrócone w jednym kierunku, to:",
+        "options": ["Wydmy podłużne", "Wydmy paraboliczne", "Wydmy gwiaździste", "Wydmy poprzeczne"],
+        "correctAnswer": "Wydmy poprzeczne",
+        "explanation": "Slajd 10 - Część 2 opisuje wydmy poprzeczne jako mające grzbiety prostopadłe do kierunku wiatru.",
+        "slideReference": "Slajd 10 - Część 2"
+    },
+    {
+        "question": "Typ wydmy powstający, gdy końce ramion są unieruchomione przez roślinność, a ramiona są ukierunkowane przeciwnie do kierunku wiatru, to:",
+        "options": ["Barchan", "Wydma gwiaździsta", "Wydma paraboliczna", "Wydma podłużna"],
+        "correctAnswer": "Wydma paraboliczna",
+        "explanation": "Slajd 11 - Część 2 opisuje wydmy paraboliczne jako te, których ramiona są unieruchomione przez roślinność i skierowane przeciwnie do wiatru.",
+        "slideReference": "Slajd 11 - Część 2"
+    },
+    {
+        "question": "Jakim formom często towarzyszą wydmy paraboliczne od strony tylnej (dowietrznej)?",
+        "options": ["Graniakom", "Niecki deflacyjne", "Jardangom", "Stożkom piaskowym"],
+        "correctAnswer": "Niecki deflacyjne",
+        "explanation": "Slajd 11 - Część 2 stwierdza, że wydmom parabolicznym towarzyszą od strony tylnej niecki deflacyjne.",
+        "slideReference": "Slajd 11 - Część 2"
+    },
+    {
+        "question": "Typ wydmy powstający w obszarach pustynnych, gdy piasek jest nawiewany z różnych kierunków, co doprowadza do rośnięcia wysokości, ale uniemożliwia wędrówkę, to:",
+        "options": ["Barchan", "Wydma paraboliczna", "Wydma gwiaździsta", "Wydma poprzeczna"],
+        "correctAnswer": "Wydma gwiaździsta",
+        "explanation": "Slajd 12 - Część 2 opisuje wydmy gwiaździste jako powstające przy nawiewaniu piasku z różnych kierunków.",
+        "slideReference": "Slajd 12 - Część 2"
+    },
+    {
+        "question": "Długie i szerokie wały piaszczyste, o długości od 300 do 600 km i wysokości 50-450 m, o złożonej budowie, w których skład wchodzą nachodzące na siebie mniejsze formy wydmowe, to:",
+        "options": ["Barchany", "Wydmy paraboliczne", "Draa", "Ripplemarki"],
+        "correctAnswer": "Draa",
+        "explanation": "Slajd 13 - Część 2 charakteryzuje draa jako długie i szerokie wały piaszczyste o złożonej budowie.",
+        "slideReference": "Slajd 13 - Część 2"
+    },
+    {
+        "question": "Gdzie w Polsce formowały się wydmy śródlądowe (głównie paraboliczne) w późnym glacjale, w warunkach peryglacjalnych?",
+        "options": ["Tylko na wybrzeżu Bałtyku", "Na piaszczystych rzecznych terasach, w pradolinach oraz na równinach sandrowych", "Tylko w wysokich górach", "Na obszarach pokrytych lessem"],
+        "correctAnswer": "Na piaszczystych rzecznych terasach, w pradolinach oraz na równinach sandrowych",
+        "explanation": "Slajd 14 - Część 2 informuje, że wydmy śródlądowe w Polsce tworzyły się m.in. na piaszczystych terasach rzecznych, w pradolinach i na sandrach.",
+        "slideReference": "Slajd 14 - Część 2"
+    },
+    {
+        "question": "Charakterystycznym przejawem depozycji pyłu eolicznego jest:",
+        "options": ["Piasek wydmowy", "Żwir rzeczny", "Less", "Glina zwałowa"],
+        "correctAnswer": "Less",
+        "explanation": "Slajd 16 - Część 2 stwierdza, że charakterystycznym przejawem depozycji pyłu eolicznego jest less.",
+        "slideReference": "Slajd 16 - Część 2"
+    },
+    {
+        "question": "Jaki jest główny składnik mineralny lessu (frakcja 20-50 μm)?",
+        "options": ["Kalcy", "Gips", "Kwarc", "Minerały ilaste"],
+        "correctAnswer": "Kwarc",
+        "explanation": "Slajd 16 - Część 2 podaje, że głównym składnikiem lessu jest kwarc frakcji 20-50 μm.",
+        "slideReference": "Slajd 16 - Część 2"
+    },
+    {
+        "question": "Jakie gleby często tworzą się na lessach?",
+        "options": ["Gleby bielicowe", "Rędziny", "Bardzo żyzne gleby - czarnoziemy", "Gleby bagienne"],
+        "correctAnswer": "Bardzo żyzne gleby - czarnoziemy",
+        "explanation": "Slajd 16 - Część 2 informuje, że na lessach tworzą się bardzo żyzne gleby - czarnoziemy.",
+        "slideReference": "Slajd 16 - Część 2"
+    },
+    {
+        "question": "Ile mniej więcej powierzchni lądów zajmują pustynie?",
+        "options": ["1/10", "1/5", "1/3", "1/2"],
+        "correctAnswer": "1/3",
+        "explanation": "Slajd 17 - Część 2 podaje, że pustynie zajmują 1/3 powierzchni lądów.",
+        "slideReference": "Slajd 17 - Część 2"
+    },
+    {
+        "question": "Pustynia kamienista (skalista) to inaczej:",
+        "options": ["Erg", "Reg", "Hamada", "Takyry"],
+        "correctAnswer": "Hamada",
+        "explanation": "Slajd 18 - Część 2 (grafika) podaje 'hamada (arab.)' jako określenie pustyni skalistej.",
+        "slideReference": "Slajd 18 - Część 2"
+    },
+    {
+        "question": "Pustynia żwirowa to inaczej (w zależności od regionu):",
+        "options": ["Kum, szamo", "Serir, gobi, reg", "Takyr, kewir", "Salar, szott"],
+        "correctAnswer": "Serir, gobi, reg",
+        "explanation": "Slajd 18 - Część 2 (grafika) podaje 'serir (arab.), gobi (mong.), reg (iran.)' jako określenia pustyni żwirowej.",
+        "slideReference": "Slajd 18 - Część 2"
+    },
+    {
+        "question": "Pustynia piaszczysta to inaczej (w zależności od regionu):",
+        "options": ["Hamada", "Reg", "Erg, kum, szamo, elisum", "Kewir"],
+        "correctAnswer": "Erg, kum, szamo, elisum",
+        "explanation": "Slajd 18 - Część 2 (grafika) podaje 'erg (arab.), kum (tur.), szamo (chiń.), elisum (mong.)' jako określenia pustyni piaszczystej.",
+        "slideReference": "Slajd 18 - Część 2"
+    },
+    {
+        "question": "Pustynia ilasta to inaczej (w zależności od regionu):",
+        "options": ["Hamada", "Salar", "Takyr, kewir, szott, sebka, sabcha, szor, sor", "Erg"],
+        "correctAnswer": "Takyr, kewir, szott, sebka, sabcha, szor, sor",
+        "explanation": "Slajd 18 - Część 2 (grafika) podaje wiele lokalnych nazw dla pustyni ilastej, m.in. takyr, kewir, szott.",
+        "slideReference": "Slajd 18 - Część 2"
+    },
+    {
+        "question": "Pustynia słona to inaczej (w zależności od regionu):",
+        "options": ["Reg", "Salar, szott", "Kum", "Hamada"],
+        "correctAnswer": "Salar, szott",
+        "explanation": "Slajd 18 - Część 2 (grafika) podaje 'salar (hiszp.), szott (arab.)' jako określenia pustyni słonej.",
+        "slideReference": "Slajd 18 - Część 2"
+    },
+    {
+        "question": "Obszar ciągnący się wzdłuż granicy lądu i morza, złożony zarówno z części nadwodnej, jak i podwodnej, gdzie współdziałają atmosfera, hydrosfera, litosfera i biosfera, to:",
+        "options": ["Wybrzeże", "Linia brzegowa", "Strefa brzegowa", "Plaża"],
+        "correctAnswer": "Strefa brzegowa",
+        "explanation": "Slajd 20 - Część 2 definiuje strefę brzegową jako obszar wzdłuż granicy lądu i morza, obejmujący część nadwodną i podwodną.",
+        "slideReference": "Slajd 20 - Część 2"
+    },
+    {
+        "question": "Pas przebiegający na styku lądu i morza, kształtowany przez procesy litoralne, to:",
+        "options": ["Nadbrzeże", "Podbrzeże", "Wybrzeże", "Strefa brzegowa"],
+        "correctAnswer": "Wybrzeże",
+        "explanation": "Slajd 20 - Część 2 definiuje wybrzeże jako pas na styku lądu i morza, kształtowany przez procesy litoralne.",
+        "slideReference": "Slajd 20 - Część 2"
+    },
+    {
+        "question": "Obszar położony poza zasięgiem oddziaływania wody morskiej w strefie brzegowej to:",
+        "options": ["Podbrzeże", "Wybrzeże", "Plaża", "Nadbrzeże"],
+        "correctAnswer": "Nadbrzeże",
+        "explanation": "Slajd 20 - Część 2 definiuje nadbrzeże jako obszar położony poza zasięgiem oddziaływania wody morskiej.",
+        "slideReference": "Slajd 20 - Część 2"
+    },
+    {
+        "question": "Obszar stale pozostający pod wodą w strefie brzegowej to:",
+        "options": ["Nadbrzeże", "Wybrzeże", "Podbrzeże", "Linia brzegowa"],
+        "correctAnswer": "Podbrzeże",
+        "explanation": "Slajd 20 - Część 2 definiuje podbrzeże jako obszar stale pozostający pod wodą.",
+        "slideReference": "Slajd 20 - Część 2"
+    },
+    {
+        "question": "Który z wymienionych procesów NIE jest bezpośrednio związany z działalnością wód morskich w strefie litoralnej?",
+        "options": ["Falowanie", "Pływy morskie", "Prądy przybrzeżne", "Korazja eoliczna"],
+        "correctAnswer": "Korazja eoliczna",
+        "explanation": "Slajd 21 - Część 2 wymienia falowanie, upwelling, pływy, prądy morskie i przybrzeżne oraz wahania poziomu wód jako procesy związane z działalnością wód morskich. Korazja eoliczna to proces wiatrowy.",
+        "slideReference": "Slajd 21 - Część 2"
+    },
+    {
+        "question": "Co jest główną przyczyną powstawania falowania na morzach i oceanach?",
+        "options": ["Aktywność wulkaniczna na dnie", "Wiatr", "Różnice w zasoleniu wody", "Siła Coriolisa"],
+        "correctAnswer": "Wiatr",
+        "explanation": "Slajd 22 - Część 2 podaje wiatr jako główną przyczynę powstawania falowania (obok podmorskich trzęsień ziemi - tsunami).",
+        "slideReference": "Slajd 22 - Część 2"
+    },
+    {
+        "question": "Ruch cząsteczek wody po orbitach kołowych, które nie podlegają deformacji wskutek tarcia o dno, spotykany na otwartym morzu, to falowanie:",
+        "options": ["Translacyjne", "Oscylacyjne", "Przybojowe", "Stojące"],
+        "correctAnswer": "Oscylacyjne",
+        "explanation": "Slajd 23 - Część 2 definiuje falowanie oscylacyjne jako ruch cząsteczek wody po orbitach kołowych bez tarcia o dno.",
+        "slideReference": "Slajd 23 - Część 2"
+    },
+    {
+        "question": "Falowanie zachodzące w płytkich wodach przybrzeżnych, gdzie wskutek zwiększonego tarcia o dno maleje długość fali, co powoduje zagęszczenie fal i ich załamywanie się (przybój), to falowanie:",
+        "options": ["Oscylacyjne", "Głębokowodne", "Translacyjne", "Sejsmiczne"],
+        "correctAnswer": "Translacyjne",
+        "explanation": "Slajd 23 - Część 2 definiuje falowanie translacyjne jako zachodzące w płytkich wodach przybrzeżnych z tarciem o dno i załamywaniem fal.",
+        "slideReference": "Slajd 23 - Część 2"
+    },
+    {
+        "question": "Prąd przybrzeżny powodujący transport rumowiska wzdłuż przybrzeża to:",
+        "options": ["Prąd rozrywający", "Prąd wsteczny", "Prąd przybrzeżny wzdłużny", "Prąd gęstościowy"],
+        "correctAnswer": "Prąd przybrzeżny wzdłużny",
+        "explanation": "Slajd 24 - Część 2 opisuje prąd przybrzeżny wzdłużny jako powodujący transport rumowiska wzdłuż przybrzeża.",
+        "slideReference": "Slajd 24 - Część 2"
+    },
+    {
+        "question": "Prąd przybrzeżny powodujący przekształcenie rzeźby dna w strefie przybrzeżnej, często odprowadzający wodę w kierunku morza prostopadle do brzegu, to:",
+        "options": ["Prąd wzdłużny", "Prąd pływowy", "Prąd rozrywający", "Prąd dryfowy"],
+        "correctAnswer": "Prąd rozrywający",
+        "explanation": "Slajd 24 - Część 2 opisuje prąd rozrywający jako powodujący przekształcenie rzeźby dna strefy przybrzeżnej.",
+        "slideReference": "Slajd 24 - Część 2"
+    },
+    {
+        "question": "Regularne wahania poziomu morza wywołane przez grawitacyjne oddziaływania Słońca, Księżyca i Ziemi to:",
+        "options": ["Falowanie", "Tsunami", "Pływy", "Prądy morskie"],
+        "correctAnswer": "Pływy",
+        "explanation": "Slajd 25 - Część 2 definiuje pływy jako regularne wahania poziomu morza wywołane oddziaływaniami grawitacyjnymi.",
+        "slideReference": "Slajd 25 - Część 2"
+    },
+    {
+        "question": "Zjawisko unoszenia się ku powierzchni chłodnych, głębinowych wód oceanicznych, bogatych w składniki odżywcze, często wywołane przez wiatry pasatowe odsuwające ciepłe wody powierzchniowe od brzegu, to:",
+        "options": ["Downwelling", "Termohalina cyrkulacja", "Upwelling", "El Niño"],
+        "correctAnswer": "Upwelling",
+        "explanation": "Slajd 27 - Część 2 (grafika i nazwa) opisuje upwelling jako wynoszenie chłodnych wód głębinowych.",
+        "slideReference": "Slajd 27 - Część 2"
+    },
+    {
+        "question": "Który z wymienionych czynników NIE wpływa znacząco na intensywność rzeźbotwórczej działalności morza?",
+        "options": ["Rodzaj skał budujących wybrzeże", "Ukształtowanie terenu (góry, wyżyny)", "Skład chemiczny atmosfery", "Pływy i klimat (wiatry, fale)"],
+        "correctAnswer": "Skład chemiczny atmosfery",
+        "explanation": "Slajd 28 - Część 2 wymienia rodzaj skał, ukształtowanie terenu, pływy, klimat i położenie akwenu jako czynniki wpływające. Skład atmosfery nie jest tu wymieniony jako bezpośredni czynnik.",
+        "slideReference": "Slajd 28 - Część 2"
+    },
+    {
+        "question": "Wybrzeże powstające w toku kształtowania mierzei (kosy) za sprawą fal i prądów przybrzeżnych na płytkich morzach, z charakterystycznymi zatokami, zalewami i jeziorami przybrzeżnymi, to wybrzeże:",
+        "options": ["Fiordowe", "Riasowe", "Mierzejowo-zalewowe", "Szkierowe"],
+        "correctAnswer": "Mierzejowo-zalewowe",
+        "explanation": "Slajd 29 - Część 2 opisuje wybrzeże mierzejowo-zalewowe jako powstające w wyniku kształtowania mierzei.",
+        "slideReference": "Slajd 29 - Część 2"
+    },
+    {
+        "question": "Wybrzeże porośnięte roślinnością bagienną (głównie mangrowcami), tworzące się w strefie pływów w ciepłym klimacie, to wybrzeże:",
+        "options": ["Koralowe", "Lagunowe", "Namorzynowe", "Deltowe"],
+        "correctAnswer": "Namorzynowe",
+        "explanation": "Slajd 30 - Część 2 opisuje wybrzeże namorzynowe jako porośnięte mangrowcami w strefie pływów w ciepłym klimacie.",
+        "slideReference": "Slajd 30 - Część 2"
+    },
+    {
+        "question": "Wybrzeże powstałe dzięki działalności organizmów rafotwórczych (koralowców) w ciepłych, płytkich wodach tropikalnych, to wybrzeże:",
+        "options": ["Namorzynowe", "Lagunowe", "Koralowe", "Klifowe"],
+        "correctAnswer": "Koralowe",
+        "explanation": "Slajd 30 - Część 2 opisuje wybrzeże koralowe jako powstałe dzięki działalności koralowców.",
+        "slideReference": "Slajd 30 - Część 2"
+    },
+    {
+        "question": "Wybrzeże oddzielone od morza wąską mierzeją, za którą powstaje spokojna, płytka laguna, to wybrzeże:",
+        "options": ["Koralowe", "Namorzynowe", "Limanowe", "Lagunowe"],
+        "correctAnswer": "Lagunowe",
+        "explanation": "Slajd 30 - Część 2 opisuje wybrzeże lagunowe jako oddzielone od morza mierzeją, z laguną za nią.",
+        "slideReference": "Slajd 30 - Część 2"
+    },
+    {
+        "question": "Wybrzeże powstające w wyniku zalania przez wodę morską górskich dolin U-kształtnych, utworzonych uprzednio przez lodowiec górski, charakteryzujące się długimi, krętymi i głębokimi zatokami, to wybrzeże:",
+        "options": ["Riasowe", "Dalmatyńskie", "Szkierowe", "Fiordowe"],
+        "correctAnswer": "Fiordowe",
+        "explanation": "Slajd 31 - Część 2 opisuje wybrzeże fiordowe jako powstałe przez zalanie dolin U-kształtnych.",
+        "slideReference": "Slajd 31 - Część 2"
+    },
+    {
+        "question": "Wybrzeże powstające poprzez zalanie przez morze dolin górskich o przebiegu prostopadłym do linii brzegowej, gdzie doliny stają się zatokami, a grzbiety wyspami i półwyspami, to wybrzeże:",
+        "options": ["Fiordowe", "Dalmatyńskie", "Riasowe", "Szkierowe"],
+        "correctAnswer": "Riasowe",
+        "explanation": "Slajd 32 - Część 2 opisuje wybrzeże riasowe jako powstałe przez zalanie dolin górskich prostopadłych do linii brzegowej.",
+        "slideReference": "Slajd 32 - Część 2"
+    },
+    {
+        "question": "Wybrzeże powstające poprzez zalanie przez morze dolin górskich o przebiegu równoległym do linii brzegowej, gdzie doliny stają się zatokami, a grzbiety wyspami i półwyspami, to wybrzeże:",
+        "options": ["Fiordowe", "Riasowe", "Szkierowe", "Dalmatyńskie"],
+        "correctAnswer": "Dalmatyńskie",
+        "explanation": "Slajd 33 - Część 2 opisuje wybrzeże dalmatyńskie jako powstałe przez zalanie dolin górskich równoległych do linii brzegowej.",
+        "slideReference": "Slajd 33 - Część 2"
+    },
+    {
+        "question": "Wybrzeże powstające w wyniku zalania przez morze obszaru objętego uprzednim działaniem lądolodu, gdzie występują liczne mutony (barańce) tworzące skaliste wyspy, to wybrzeże:",
+        "options": ["Fiordowe", "Dalmatyńskie", "Riasowe", "Szkierowe (szerowe)"],
+        "correctAnswer": "Szkierowe (szerowe)",
+        "explanation": "Slajd 34 - Część 2 opisuje wybrzeże szkierowe (szerowe) jako powstałe przez zalanie obszaru polodowcowego z mutonami.",
+        "slideReference": "Slajd 34 - Część 2"
+    },
+    {
+        "question": "Szerokie, lejkowate ujście rzeki do morza, powstałe w wyniku działania pływów morskich, które poszerzają i pogłębiają ujście rzeki, to wybrzeże:",
+        "options": ["Deltowe", "Limanowe", "Lejkowate (estuariowe)", "Föhrdowe"],
+        "correctAnswer": "Lejkowate (estuariowe)",
+        "explanation": "Slajd 35 - Część 2 opisuje wybrzeże lejkowate (estuariowe) jako szerokie, lejkowate ujście rzeki ukształtowane przez pływy.",
+        "slideReference": "Slajd 35 - Część 2"
+    },
+    {
+        "question": "Wybrzeże powstające jako skutek akumulacyjnej działalności rzeki w odcinku ujściowym przy jednoczesnym współudziale wody morskiej, charakteryzujące się silnym rozrostem w głąb akwenu, to wybrzeże:",
+        "options": ["Lejkowate", "Limanowe", "Deltowe", "Klifowe"],
+        "correctAnswer": "Deltowe",
+        "explanation": "Slajd 36 - Część 2 opisuje wybrzeże deltowe jako powstające w wyniku akumulacji rzecznej przy współudziale wód morskich.",
+        "slideReference": "Slajd 36 - Część 2"
+    },
+    {
+        "question": "Wybrzeże z wąskimi zatokami będącymi przedłużeniem dolin jarowych, często oddzielonymi od morza mierzeją, to wybrzeże:",
+        "options": ["Deltowe", "Lejkowate", "Limanowe", "Föhrdowe"],
+        "correctAnswer": "Limanowe",
+        "explanation": "Slajd 37 - Część 2 opisuje wybrzeże limanowe jako wybrzeże z wąskimi zatokami będącymi przedłużeniem dolin jarowych.",
+        "slideReference": "Slajd 37 - Część 2"
+    },
+    {
+        "question": "Wysokie wybrzeże powstałe przez zalanie form lodowcowych z rynnami subglacjalnymi, tworzące rozległe, głębokie zatoki, to wybrzeże:",
+        "options": ["Fiordowe", "Szkierowe", "Föhrdowe (ferdowe)", "Riasowe"],
+        "correctAnswer": "Föhrdowe (ferdowe)",
+        "explanation": "Slajd 38 - Część 2 opisuje wybrzeże föhrdowe (ferdowe) jako wysokie wybrzeże powstałe przez zalanie form lodowcowych z rynnami subglacjalnymi.",
+        "slideReference": "Slajd 38 - Część 2"
+    },
+    {
+        "question": "Strome, często prawie pionowe urwisko brzegu morskiego, powstające w wyniku niszczenia (abrazji) przez fale, to:",
+        "options": ["Plaża", "Wydma nadmorska", "Klif", "Mierzeja"],
+        "correctAnswer": "Klif",
+        "explanation": "Slajd 39 - Część 2 opisuje klif jako strome urwisko powstające w wyniku niszczenia brzegu przez fale.",
+        "slideReference": "Slajd 39 - Część 2"
+    },
+    {
+        "question": "Zagłębienie u podstawy klifu, drążone przez fale, ułatwiające odrywanie skał z wyższej części brzegu, to:",
+        "options": ["Platforma abrazyjna", "Nisza abrazyjna", "Koluwium", "Rewa"],
+        "correctAnswer": "Nisza abrazyjna",
+        "explanation": "Slajd 39 - Część 2 (grafika) wskazuje niszę abrazyjną jako zagłębienie u podstawy klifu.",
+        "slideReference": "Slajd 39 - Część 2"
+    },
+    {
+        "question": "Piaszczysty, płaski fragment wybrzeża graniczący bezpośrednio z morzem, mający nieustanny kontakt z wodą morską, to:",
+        "options": ["Wał brzegowy", "Wał burzowy", "Plaża", "Rewa"],
+        "correctAnswer": "Plaża",
+        "explanation": "Slajd 40 - Część 2 definiuje plażę jako piaszczysty, płaski fragment wybrzeża graniczący z morzem.",
+        "slideReference": "Slajd 40 - Część 2"
+    },
+    {
+        "question": "Graniczny fragment plaży zbudowany z piasków i żwirów, pozostający w bezpośrednim kontakcie z wodą morską i stanowiący czoło plaży, to:",
+        "options": ["Plaża", "Wał burzowy", "Rewa", "Wał brzegowy"],
+        "correctAnswer": "Wał brzegowy",
+        "explanation": "Slajd 40 - Część 2 definiuje wał brzegowy jako graniczny fragment plaży stanowiący jej czoło.",
+        "slideReference": "Slajd 40 - Część 2"
+    },
+    {
+        "question": "Tylna granica plaży, fragment zbudowany głównie z piasku, nadbudowywany tylko w czasie sztormów, to:",
+        "options": ["Wał brzegowy", "Plaża właściwa", "Wał burzowy", "Lido"],
+        "correctAnswer": "Wał burzowy",
+        "explanation": "Slajd 40 - Część 2 definiuje wał burzowy jako tylną granicę plaży, nadbudowywaną podczas sztormów.",
+        "slideReference": "Slajd 40 - Część 2"
+    }
+
+        ];
+
+        const numQuestionsToDisplay = 20;
+        let currentQuizQuestions = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function selectRandomQuestions() {
+            const shuffledAllQuestions = [...allQuizData];
+            shuffleArray(shuffledAllQuestions);
+            currentQuizQuestions = shuffledAllQuestions.slice(0, numQuestionsToDisplay);
+        }
+
+        const quizForm = document.getElementById('quizForm');
+        const resultsDiv = document.getElementById('results');
+
+        function buildQuiz() {
+            quizForm.innerHTML = '';
+            resultsDiv.innerHTML = '';
+            selectRandomQuestions();
+
+            currentQuizQuestions.forEach((currentQuestionData, questionIndex) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.classList.add('question-block');
+                questionBlock.setAttribute('id', `question${questionIndex}`);
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('question-text'); // Dodana klasa
+                questionText.textContent = `${questionIndex + 1}. ${currentQuestionData.question}`;
+                questionBlock.appendChild(questionText);
+
+                if (currentQuestionData.slideReference) {
+                    const slideRefText = document.createElement('span');
+                    slideRefText.classList.add('slide-ref');
+                    slideRefText.textContent = `(Odn. ${currentQuestionData.slideReference})`;
+                    questionBlock.appendChild(slideRefText);
+                }
+
+                const shuffledOptions = [...currentQuestionData.options];
+                shuffleArray(shuffledOptions);
+
+                shuffledOptions.forEach(option => {
+                    const label = document.createElement('label');
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `question${questionIndex}`;
+                    radio.value = option;
+                    label.appendChild(radio);
+                    label.appendChild(document.createTextNode(option));
+                    questionBlock.appendChild(label);
+                });
+                quizForm.appendChild(questionBlock);
+            });
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            resultsDiv.innerHTML = '<h3>Wyniki:</h3>';
+
+            currentQuizQuestions.forEach((currentQuestionData, questionIndex) => {
+                const questionBlock = document.getElementById(`question${questionIndex}`);
+                questionBlock.style.borderColor = '#d1d9e6';
+                const prevFeedback = questionBlock.querySelector('.feedback-message');
+                if (prevFeedback) prevFeedback.remove();
+                const prevExplanation = questionBlock.querySelector('.explanation');
+                if (prevExplanation) prevExplanation.remove();
+
+                const radioButtons = quizForm.elements[`question${questionIndex}`];
+                let selectedOptionValue = "";
+                if (radioButtons) {
+                    if (radioButtons.value !== undefined) { // Dla pojedynczego radio lub gdy jest .value
+                        selectedOptionValue = radioButtons.value;
+                         // Jeśli to grupa, musimy znaleźć zaznaczony
+                        if (radioButtons.length > 1) {
+                             selectedOptionValue = ""; // Resetujemy, bo .value da pierwszą opcję
+                             for (const radioButton of radioButtons) {
+                                if (radioButton.checked) {
+                                    selectedOptionValue = radioButton.value;
+                                    break;
+                                }
+                            }
+                        }
+                    } else { // Dla grupy radio buttonów (NodeList)
+                        for (const radioButton of radioButtons) {
+                            if (radioButton.checked) {
+                                selectedOptionValue = radioButton.value;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.classList.add('feedback-message');
+
+                if (selectedOptionValue === currentQuestionData.correctAnswer) {
+                    score++;
+                    feedbackDiv.textContent = `Poprawna odpowiedź!`;
+                    feedbackDiv.classList.add('correct-answer-feedback'); // Nowa klasa
+                    questionBlock.style.borderColor = '#28a745';
+                } else if (selectedOptionValue) {
+                    feedbackDiv.textContent = `Niepoprawna odpowiedź. Poprawna to: ${currentQuestionData.correctAnswer}.`;
+                    feedbackDiv.classList.add('incorrect-answer-feedback'); // Nowa klasa
+                    questionBlock.style.borderColor = '#dc3545';
+                } else {
+                    feedbackDiv.textContent = `Brak odpowiedzi. Poprawna to: ${currentQuestionData.correctAnswer}.`;
+                    feedbackDiv.classList.add('no-answer-feedback'); // Nowa klasa
+                    questionBlock.style.borderColor = '#ffc107';
+                }
+                questionBlock.appendChild(feedbackDiv);
+
+                if (currentQuestionData.explanation && (selectedOptionValue !== currentQuestionData.correctAnswer || !selectedOptionValue)) {
+                    const explanationText = document.createElement('div');
+                    explanationText.classList.add('explanation');
+                    explanationText.textContent = currentQuestionData.explanation;
+                    questionBlock.appendChild(explanationText);
+                }
+            });
+
+            const overallScore = document.createElement('h4');
+            const percentage = currentQuizQuestions.length > 0 ? ((score / currentQuizQuestions.length) * 100).toFixed(2) : 0;
+            overallScore.textContent = `Twój wynik końcowy: ${score} z ${currentQuizQuestions.length} (${percentage}%)`;
+            resultsDiv.appendChild(overallScore);
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        buildQuiz();
+    </script>
+</body>
+</html>
