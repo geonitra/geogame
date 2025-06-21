@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UwU Geomorfologia ｡＾･ｪ･＾｡</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #eef1f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: #fff;
+            padding: 25px 30px;
+            padding-top: 60px; /* Zwiększony padding dla linku i checkboxa */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            position: relative; /* Dla pozycjonowania absolutnego linku i checkboxa */
+        }
+        .top-link {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            font-weight: bold;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .top-link:hover {
+            text-decoration: underline;
+        }
+        .mode-toggle {
+            position: absolute;
+            top: 22px; /* Lekkie dopasowanie pionowe */
+            right: 30px;
+            display: flex;
+            align-items: center;
+        }
+        .mode-toggle label {
+            margin-left: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .mode-toggle input[type="checkbox"] {
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+        .question-block {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #d1d9e6;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            transition: border-color 0.3s ease;
+        }
+        .question-block p.question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #34495e;
+            font-size: 1.05em;
+        }
+        .question-block label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            border: 1px solid #e1e5ea;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 0.95em;
+        }
+        .question-block label:hover {
+            background-color: #f0f4f8;
+            border-color: #79a6dc;
+        }
+        .question-block input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.05);
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 500;
+            margin-top: 30px;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e9f7ef;
+        }
+        #results h3 {
+            color: #16a085;
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+        #results h4 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .feedback-message {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .correct-answer-feedback {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect-answer-feedback {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .no-answer-feedback {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .explanation {
+            font-style: italic;
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 8px;
+            padding-left: 15px;
+            border-left: 3px solid #bdc3c7;
+        }
+        .slide-ref {
+            font-size: 0.75em;
+            color: #7f8c8d;
+            display: block;
+            text-align: right;
+            margin-top: 5px;
+            margin-bottom: 10px; /* Dodatkowy margines przed opcjami */
+        }
+
+        /* Style dla trybu trudnego */
+        .answer-options-container {
+            margin-top: 10px;
+        }
+        .spoiler-instruction {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            display: none; /* Domyślnie ukryty */
+        }
+        .answer-options-container.hard-mode-active .spoiler-instruction {
+            display: block; /* Pokazuj tylko w trybie trudnym przed odkryciem */
+        }
+        .answer-options-container.hard-mode-active .options-wrapper {
+            filter: blur(5px);
+            cursor: pointer;
+            transition: filter 0.3s ease-in-out;
+            padding: 1px; /* Minimalny padding, aby rozmycie objęło krawędzie labeli */
+            background-color: rgba(230, 230, 230, 0.1); /* Subtelne tło dla rozmytego obszaru */
+            border-radius: 5px;
+        }
+        .answer-options-container.hard-mode-active .options-wrapper.revealed {
+            filter: none;
+            cursor: default;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="top-link">Test mapka</a>
+        <div class="mode-toggle">
+            <input type="checkbox" id="hardModeCheckbox">
+            <label for="hardModeCheckbox">Tryb trudny</label>
+        </div>
+
+        <h1>UwU Geomorfologia</h1>
+        <form id="quizForm">
+            <!-- Pytania zostaną wstawione tutaj przez JavaScript -->
+        </form>
+        <button type="button" class="button" onclick="submitQuiz()">Sprawdź odpowiedzi</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+const allQuizData = [
+    // === Strona 1: Procesy endogeniczne ===
+    {
+        question: "Czym charakteryzuje się płyta (skorupa) oceaniczna w porównaniu do kontynentalnej?",
+        options: [
+            "Mniejszą gęstością i większą grubością",
+            "Większą gęstością (ok. 3g/cm3) i mniejszą grubością (5-10km)",
+            "Głównie granitowym składem i małą gęstością",
+            "Średnią grubością 35 km i gęstością ok. 2,7 g/cm3"
+        ],
+        correctAnswer: "Większą gęstością (ok. 3g/cm3) i mniejszą grubością (5-10km)",
+        explanation: "Płyta oceaniczna jest cieńsza (5-10 km) i gęstsza (ok. 3 g/cm3) od płyty kontynentalnej, która ma średnią grubość 35 km i gęstość ok. 2,7 g/cm3.",
+        slideReference: "Strona 1 - Astenosfera"
+    },
+    {
+        question: "Jakie są trzy główne typy granic płyt litosfery według teorii płyt litosfery?",
+        options: [
+            "Strefy ryftów, strefy subdukcji i strefy spreadingu",
+            "Strefy rozrostu dna oceanicznego, strefy konwergencji i uskoki transformacyjne",
+            "Grzbiety oceaniczne, rowy oceaniczne i płaszczowiny",
+            "Strefy izostatyczne, epejrogeniczne i orogeniczne"
+        ],
+        correctAnswer: "Strefy rozrostu dna oceanicznego, strefy konwergencji i uskoki transformacyjne",
+        explanation: "Podstawowe założenia teorii płyt litosfery wymieniają trzy typy granic: strefy rozrostu (grzbiety oceaniczne), strefy konwergencji (subdukcji) i uskoki transformacyjne.",
+        slideReference: "Strona 1 - Teoria płyt litosfery"
+    },
+    {
+        question: "Który z modeli izostazji zakłada, że litosfera składa się z bloków o równej gęstości, ale różnej grubości?",
+        options: [
+            "Model Pratta",
+            "Model Airy'ego",
+            "Model złożony",
+            "Model Benioffa"
+        ],
+        correctAnswer: "Model Airy'ego",
+        explanation: "Model Airy'ego opisuje izostazję jako stan, w którym bloki litosfery mają jednakową gęstość, ale ich grubość jest zróżnicowana, co wpływa na ich zanurzenie w astenosferze.",
+        slideReference: "Strona 1 - Ruchy izostatyczne"
+    },
+    {
+        question: "Czym są ruchy epejrogeniczne?",
+        options: [
+            "Gwałtownymi ruchami górotwórczymi prowadzącymi do fałdowania",
+            "Bardzo powolnymi ruchami pionowymi, powodującymi wydźwignięcie lądu",
+            "Poziomymi ruchami płyt litosfery w strefach spreadingu",
+            "Procesami związanymi z przemieszczaniem się magmy pod skorupą"
+        ],
+        correctAnswer: "Bardzo powolnymi ruchami pionowymi, powodującymi wydźwignięcie lądu",
+        explanation: "Ruchy epejrogeniczne to bardzo powolne, pionowe ruchy wydźwigające lub obniżające duże obszary lądu (ruchy przeciwstawne to ruchy talasogeniczne).",
+        slideReference: "Strona 1 - Ruchy epejrogeniczne"
+    },
+    {
+        question: "Co jest skutkiem zbieżnych (konwergentnych) granic płyt litosfery?",
+        options: [
+            "Powstawanie ryftów i rozrost dna oceanicznego",
+            "Tworzenie systemów uskoków przesuwczych",
+            "Pogrążanie się jednej płyty litosfery pod drugą, czyli subdukcja",
+            "Wydźwignięcie lądu i transgresje morskie"
+        ],
+        correctAnswer: "Pogrążanie się jednej płyty litosfery pod drugą, czyli subdukcja",
+        explanation: "Na zbieżnych (konwergentnych) granicach płyt dochodzi do kolizji, której skutkiem jest najczęściej subdukcja, czyli pogrążanie się gęstszej płyty (zwykle oceanicznej) pod lżejszą.",
+        slideReference: "Strona 1 - Granice płyt litosfery"
+    },
+    // === Strona 2: Wulkanizm ===
+    {
+        question: "Jak klasyfikuje się lawy ze względu na zawartość krzemionki (SiO2)?",
+        options: [
+            "Kwaśne (>65%), obojętne (53-65%), zasadowe (<53%)",
+            "Blokowe (AA), sznurowe (pahoehoe), poduszkowe",
+            "Centralne, linearne, arealne",
+            "Lekkie i ciężkie"
+        ],
+        correctAnswer: "Kwaśne (>65%), obojętne (53-65%), zasadowe (<53%)",
+        explanation: "Podział law ze względu na skład chemiczny opiera się na zawartości SiO2: kwaśne mają jej powyżej 65%, obojętne 53-65%, a zasadowe poniżej 53%.",
+        slideReference: "Strona 2 - Podstawowe rodzaje materiału wulkanicznego"
+    },
+    {
+        question: "Czym są solfatary?",
+        options: [
+            "Gorące ekshalacje (200-800°C) bogate w tlenki żelaza",
+            "Chłodne ekshalacje (<100°C) bogate w parę wodną i dwutlenek węgla",
+            "Ekshalacje o temperaturze 100-200°C, bogate w związki siarki",
+            "Duże fragmenty lawy, które zastygają w powietrzu"
+        ],
+        correctAnswer: "Ekshalacje o temperaturze 100-200°C, bogate w związki siarki",
+        explanation: "Solfatary to rodzaj ekshalacji wulkanicznych o temperaturze 100-200°C, których charakterystycznym składnikiem są związki siarki, nadające im zielonożółty kolor.",
+        slideReference: "Strona 2 - Podstawowe rodzaje materiału wulkanicznego"
+    },
+    {
+        question: "Jaka forma wulkaniczna powstaje w wyniku zapadnięcia się opróżnionej komory magmowej?",
+        options: [
+            "Maar",
+            "Stożek żużlowy",
+            "Kaldera",
+            "Mamelon"
+        ],
+        correctAnswer: "Kaldera",
+        explanation: "Kaldera to duża forma wklęsła o średnicy kilku kilometrów, która powstaje w wyniku kolapsu (zapadnięcia) stropu komory magmowej po jej opróżnieniu podczas dużej erupcji.",
+        slideReference: "Strona 2 - Rodzaje erupcji"
+    },
+    {
+        question: "Czym charakteryzuje się erupcja typu hawajskiego?",
+        options: [
+            "Gwałtownymi eksplozjami, dużym ciśnieniem gazów i lepką lawą",
+            "Małą lepkością lawy, niskim ciśnieniem gazów i spokojnym wylewem, tworząc wulkany tarczowe",
+            "Wyrzucaniem głównie materiału piroklastycznego i tworzeniem stożków żużlowych",
+            "Powstawaniem kopuł lawowych (tolidów) z bardzo lepkiej lawy"
+        ],
+        correctAnswer: "Małą lepkością lawy, niskim ciśnieniem gazów i spokojnym wylewem, tworząc wulkany tarczowe",
+        explanation: "Typ hawajski erupcji cechuje się efuzywnym (spokojnym) wylewem mało lepkiej, zasadowej lawy, co prowadzi do powstawania rozległych wulkanów tarczowych.",
+        slideReference: "Strona 2 - Podział wulkanów ze względu na lepkość lawy i ciśnienie gazów"
+    },
+    {
+        question: "Co to jest stratowulkan?",
+        options: [
+            "Wulkan tarczowy zbudowany wyłącznie z wylewów lawy bazaltowej",
+            "Forma powstała w wyniku jednej, eksplozywnej erupcji",
+            "Wulkan o budowie warstwowej, składający się z naprzemiennych pokładów lawy i tefry (materiałów piroklastycznych)",
+            "Wulkan powstały pod lodowcem, o płaskiej powierzchni szczytowej"
+        ],
+        correctAnswer: "Wulkan o budowie warstwowej, składający się z naprzemiennych pokładów lawy i tefry (materiałów piroklastycznych)",
+        explanation: "Stratowulkany (wulkany mieszane) mają charakterystyczny, stromy stożek zbudowany z warstw zastygłej lawy i materiałów piroklastycznych, osadzonych naprzemiennie podczas kolejnych erupcji.",
+        slideReference: "Strona 2 - Stratowulkany"
+    },
+    // === Strona 3: Sejsmika ===
+    {
+        question: "Jaka jest główna przyczyna występowania tsunami?",
+        options: [
+            "Uderzenia meteorytów",
+            "Podmorskie trzęsienia ziemi",
+            "Zmiany klimatyczne i topnienie lodowców",
+            "Aktywność plam gorąca"
+        ],
+        correctAnswer: "Podmorskie trzęsienia ziemi",
+        explanation: "Wśród przyczyn występowania tsunami, podmorskie trzęsienia ziemi są wymienione jako pierwsza i najczęstsza przyczyna.",
+        slideReference: "Strona 3 - Przyczyny występowania tsunami"
+    },
+    {
+        question: "Czym, według tekstu, jest osuwisko Storegga?",
+        options: [
+            "Osuwiskiem naziemnym w Alpach",
+            "Podmorskim osuwiskiem, które jest jedną z przyczyn tsunami",
+            "Trzęsieniem ziemi, które wywołało tsunami na Krakatau",
+            "Uskokiem tektonicznym na Alasce"
+        ],
+        correctAnswer: "Podmorskim osuwiskiem, które jest jedną z przyczyn tsunami",
+        explanation: "Osuwisko Storegga jest podane jako przykład podmorskiego osuwiska, które może być przyczyną tsunami.",
+        slideReference: "Strona 3 - Przyczyny występowania tsunami"
+    },
+    {
+        question: "W jakim rejonie trzęsienie ziemi z 1958 roku spowodowało ogromne osuwisko, które wywołało megatsunami?",
+        options: [
+            "W zatoce Lituya na Alasce",
+            "Na wyspie Krakatau w Indonezji",
+            "Na wschodnim wybrzeżu Japonii",
+            "W Meksyku, w stanie Jalisco"
+        ],
+        correctAnswer: "W zatoce Lituya na Alasce",
+        explanation: "Tekst wskazuje, że trzęsienie ziemi z 1958 roku w Zatoce Lituya (Alaska) spowodowało ogromne osuwisko, które wygenerowało historycznie wysoką falę tsunami.",
+        slideReference: "Strona 3 - Zatoka Lituya"
+    },
+    // === Strona 4: Metodyka i źródła danych ===
+    {
+        question: "Co obejmuje opis rzeźby terenu?",
+        options: [
+            "Tylko wysokość bezwzględną i względną",
+            "Morfometrię, morfologię, morfogenezę i morfochronologię",
+            "Wyłącznie analizę geologiczną i litologię osadów",
+            "Analizę pyłkową i badania archeologiczne"
+        ],
+        correctAnswer: "Morfometrię, morfologię, morfogenezę i morfochronologię",
+        explanation: "Pełny opis rzeźby terenu składa się z czterech elementów: morfometrii i morfologii (wymiary i kształt), morfogenezy (pochodzenie form) i morfochronologii (wiek form).",
+        slideReference: "Strona 4 - Opis rzeźby terenu"
+    },
+    {
+        question: "Co oznacza dodatnia wartość wskaźnika TPI (Topographic Position Index)?",
+        options: [
+            "Formy wklęsłe (doliny, niecki)",
+            "Formy płaskie (równiny)",
+            "Formy wypukłe (grzbiety, pagórki)",
+            "Obszary bezodpływowe"
+        ],
+        correctAnswer: "Formy wypukłe (grzbiety, pagórki)",
+        explanation: "Wskaźnik TPI służy do wydzielania form rzeźby. Wartości dodatnie wskazują na formy wypukłe, ujemne na wklęsłe, a bliskie zera na formy płaskie.",
+        slideReference: "Strona 4 - Wydzielanie form rzeźby terenu"
+    },
+    {
+        question: "Która z wymienionych metod laboratoryjnych służy do określenia składu granulometrycznego osadów?",
+        options: [
+            "Analiza pyłkowa",
+            "Metoda georadarowa",
+            "Metoda sedymentacyjna (areometryczna)",
+            "Metoda paleomagnetyczna"
+        ],
+        correctAnswer: "Metoda sedymentacyjna (areometryczna)",
+        explanation: "Metoda sedymentacyjna (areometryczna) jest metodą laboratoryjną stosowaną w analizie uziarnienia (składu granulometrycznego). Polega ona na pomiarze tempa opadania cząstek w cieczy.",
+        slideReference: "Strona 4 - Metody laboratoryjne"
+    },
+    {
+        question: "Czym jest analiza paleogeomorfologiczna?",
+        options: [
+            "Analizą współczesnych procesów rzeźbotwórczych",
+            "Odtwarzaniem dawnych procesów rzeźbotwórczych i rekonstrukcją dawnej rzeźby",
+            "Wyłącznie badaniem wieku form terenu",
+            "Tworzeniem numerycznych modeli terenu"
+        ],
+        correctAnswer: "Odtwarzaniem dawnych procesów rzeźbotwórczych i rekonstrukcją dawnej rzeźby",
+        explanation: "Analiza paleogeomorfologiczna pomaga na odtworzenie dawnych procesów rzeźbotwórczych, co pozwala zrekonstruować dawną rzeźbę, rozpoznać budowę geologiczną i ustalić stratygrafię.",
+        slideReference: "Strona 4 - Analiza paleogeomorfologiczna"
+    },
+    // === Strona 5: Wietrzenie ===
+    {
+        question: "Czym jest eksfoliacja (łuszczenie skały)?",
+        options: [
+            "Rozpadem skały na pojedyncze ziarna mineralne",
+            "Tworzeniem się pęknięć w skale w wyniku zamarzania wody",
+            "Oddzielaniem się przypowierzchniowych, nagrzanych warstw skały",
+            "Rozpuszczaniem chemicznym minerałów przez wodę"
+        ],
+        correctAnswer: "Oddzielaniem się przypowierzchniowych, nagrzanych warstw skały",
+        explanation: "Eksfoliacja, czyli wietrzenie termiczne, polega na oddzielaniu się cienkich, zewnętrznych warstw skały, które nagrzewają się szybciej i mocniej niż jej głębsze partie.",
+        slideReference: "Strona 5 - Wietrzenie fizyczne"
+    },
+    {
+        question: "Jakie rodzaje wietrzenia dominują w klimacie gorącym i wilgotnym (okołorównikowym) według schematu?",
+        options: [
+            "Silne wietrzenie fizyczne",
+            "Bardzo silne wietrzenie chemiczne",
+            "Umiarkowane wietrzenie fizyczne i chemiczne",
+            "Brak wietrzenia"
+        ],
+        correctAnswer: "Bardzo silne wietrzenie chemiczne",
+        explanation: "Schemat 'Zależność wietrzenia od klimatu' pokazuje, że w strefie klimatów gorących i wilgotnych (okołorównikowych) dominuje bardzo intensywne wietrzenie chemiczne.",
+        slideReference: "Strona 5 - Zależność wietrzenia od klimatu"
+    },
+    {
+        question: "Czym są zwietrzeliny laterytowe?",
+        options: [
+            "Produktem dezintegracji skał w klimacie zimnym",
+            "Zwietrzeliną bogatą w minerały ilaste (kaolinit), typową dla klimatu subtropikalnego",
+            "Produktem dekompozycji, w którym minerały pierwotne zostały zastąpione przez związki żelaza, typowym dla klimatu tropikalnego",
+            "Luźnym gruzem skalnym powstałym w wyniku wietrzenia fizycznego"
+        ],
+        correctAnswer: "Produktem dekompozycji, w którym minerały pierwotne zostały zastąpione przez związki żelaza, typowym dla klimatu tropikalnego",
+        explanation: "Zwietrzeliny laterytowe powstają w wyniku zaawansowanej dekompozycji chemicznej w klimacie gorącym i wilgotnym. Cechują się dużą twardością i zawartością tlenków żelaza i glinu.",
+        slideReference: "Strona 5 - Zwietrzeliny"
+    },
+    // === Strona 6: Analiza facjalna osadów ===
+    {
+        question: "Czym jest diageneza?",
+        options: [
+            "Procesem transportu i osadzania materiału",
+            "Zespołem zjawisk prowadzących do przemian luźnych osadów w zwięzłą skałę",
+            "Obszarem, w którym odbywają się procesy sedymentacji",
+            "Cechą skały osadowej odzwierciedlającą warunki jej powstania"
+        ],
+        correctAnswer: "Zespołem zjawisk prowadzących do przemian luźnych osadów w zwięzłą skałę",
+        explanation: "Diagneza to ogół procesów fizycznych i chemicznych (np. kompakcja, cementacja), które przekształcają luźny osad w litą skałę osadową po jego pogrzebaniu.",
+        slideReference: "Strona 6 - Pojęcia podstawowe"
+    },
+    {
+        question: "Jak nazywa się warstewka osadu o miąższości mniejszej niż 10 mm?",
+        options: [
+            "Warstwa",
+            "Ławica",
+            "Lamina",
+            "Litofacja"
+        ],
+        correctAnswer: "Lamina",
+        explanation: "Tekst rozróżnia warstwy (>10 mm miąższości) od lamin (<10 mm miąższości).",
+        slideReference: "Strona 6 - warstwowanie"
+    },
+    {
+        question: "Czym jest warstwowanie przekątne?",
+        options: [
+            "Poziomym ułożeniem warstw osadu",
+            "Strukturą, w której warstwy są nachylone w stosunku do pierwotnie poziomej powierzchni depozycyjnej",
+            "Pionowym następstwem różnych typów skał osadowych",
+            "Strukturą powstałą w wyniku deformacji tektonicznych"
+        ],
+        correctAnswer: "Strukturą, w której warstwy są nachylone w stosunku do pierwotnie poziomej powierzchni depozycyjnej",
+        explanation: "Warstwowanie przekątne to wewnętrzna struktura osadu, gdzie laminy lub warstwy są nachylone. Powstaje w wyniku depozycji materiału przez prąd wody lub powietrza (np. na wydmach, ripplemarkach).",
+        slideReference: "Strona 6 - Warstwowanie przekątne"
+    },
+    // === Strona 7: Procesy stokowe ===
+    {
+        question: "Czym jest osuwisko rotacyjne?",
+        options: [
+            "Przemieszczeniem po płaskiej powierzchni, równoległej do stoku",
+            "Powolnym przemieszczaniem się gruntu o kilka mm rocznie",
+            "Opadaniem pojedynczych bloków skalnych",
+            "Przemieszczeniem, gdzie powierzchnia poślizgu jest wklęsła i zakrzywiona"
+        ],
+        correctAnswer: "Przemieszczeniem, gdzie powierzchnia poślizgu jest wklęsła i zakrzywiona",
+        explanation: "Osuwisko rotacyjne charakteryzuje się tym, że masa skalna lub gruntowa przemieszcza się ruchem obrotowym po wklęsłej, zakrzywionej powierzchni poślizgu.",
+        slideReference: "Strona 7 - Osuwanie"
+    },
+    {
+        question: "Co to jest soliflukcja?",
+        options: [
+            "Spływ błotny w klimacie gorącym",
+            "Proces pełzania zachodzący w strefach wieloletniej zmarzliny",
+            "Gwałtowna lawina skalna",
+            "Formowanie się wąwozów w wyniku erozji wodnej"
+        ],
+        correctAnswer: "Proces pełzania zachodzący w strefach wieloletniej zmarzliny",
+        explanation: "Soliflukcja to specyficzny rodzaj pełzania, który występuje w strefach peryglacjalnych. Polega na powolnym spływie nasiąkniętej wodą warstwy czynnej po zamarzniętym podłożu.",
+        slideReference: "Strona 7 - Pełzanie"
+    },
+    {
+        question: "Czym są wąwozy?",
+        options: [
+            "Stożkowatymi usypiskami luźnego materiału u podnóża stoku",
+            "Płytkimi formami erozji liniowej, które można zniwelować przez orkę",
+            "Suchymi dolinami o wąskim dnie, małym spadku i stromych zboczach",
+            "Szerokimi, płaskodennymi dolinami peryglacjalnymi"
+        ],
+        correctAnswer: "Suchymi dolinami o wąskim dnie, małym spadku i stromych zboczach",
+        explanation: "Wąwozy to duże, trwałe formy erozji liniowej, opisane jako suche doliny o wąskim dnie i stromych zboczach, osiągające do 100 m głębokości.",
+        slideReference: "Strona 7 - Formy rzeźby terenu utworzone w wyniku spłukiwania linijnego"
+    },
+    // === Strona 8: Rzeźba fluwialna ===
+    {
+        question: "Jaki typ koryta rzecznego jest charakterystyczny dla systemu wielonurtowego z licznymi, nietrwałymi łachami śródkorytowymi?",
+        options: [
+            "Koryto proste",
+            "Koryto meandrujące",
+            "Koryto roztokowe",
+            "Koryto skalne"
+        ],
+        correctAnswer: "Koryto roztokowe",
+        explanation: "Koryto roztokowe (ang. braided) charakteryzuje się dużą szerokością, płytkością oraz przepływem wody wieloma nurtami, które rozdzielają się i łączą pomiędzy niestabilnymi łachami (odsypami).",
+        slideReference: "Strona 8 - Rzeki roztokowe"
+    },
+    {
+        question: "Czym są starorzecza?",
+        options: [
+            "Aktywnymi kanałami przepływów pozakorytowych podczas powodzi",
+            "Nieczynnymi fragmentami koryta rzecznego, wypełnionymi wodą lub osadami",
+            "Wachlarzowatymi nagromadzeniami osadów u wylotu dolin górskich",
+            "Podłużnymi wałami osadów wzdłuż brzegów rzeki"
+        ],
+        correctAnswer: "Nieczynnymi fragmentami koryta rzecznego, wypełnionymi wodą lub osadami",
+        explanation: "Starorzecza (jeziora odcięte, oxbow lakes) to dawne meandry rzeki, które zostały odcięte od głównego nurtu w wyniku naturalnego 'wyprostowania' biegu rzeki.",
+        slideReference: "Strona 8 - Makroformy równiny zalewowej"
+    },
+    {
+        question: "Co to jest baza erozyjna rzeki?",
+        options: [
+            "Najwyższy punkt w profilu podłużnym rzeki",
+            "Obszar, z którego rzeka zbiera swoje wody",
+            "Najniższy punkt, do którego rzeka może erodować, najczęściej poziom morza",
+            "Materiał skalny transportowany po dnie rzeki"
+        ],
+        correctAnswer: "Najniższy punkt, do którego rzeka może erodować, najczęściej poziom morza",
+        explanation: "Baza erozyjna to poziom, do którego rzeka dąży poprzez erozję wgłębną. Jest to najniższy punkt jej profilu, którym dla rzek głównych jest poziom morza, a dla dopływów - poziom rzeki głównej.",
+        slideReference: "Strona 8 - Erozja rzeczna"
+    },
+    // === Strona 9: Rzeźba glacjalna ===
+    {
+        question: "Jak nazywa się proces wymywania gleby i zwietrzeliny przez wodę roztopową pochodzącą z topniejącego lodu lodowcowego?",
+        options: [
+            "Erozja lodowcowa",
+            "Ablacja",
+            "Egzaracja",
+            "Detrakcja"
+        ],
+        correctAnswer: "Ablacja",
+        explanation: "W kontekście geomorfologii glacjalnej, ablacja jest tu szeroko zdefiniowana jako procesy usuwające masę z lodowca, w tym wymywanie materiału przez wody roztopowe.",
+        slideReference: "Strona 9 - Geomorfologia glacjalna"
+    },
+    {
+        question: "Czym są wygłady lodowcowe (mutony)?",
+        options: [
+            "Osadami transportowanymi wewnątrz lodowca",
+            "Głębokimi dolinami przekształconymi przez lodowiec",
+            "Oszlifowanymi pagórkami skalnymi, wydłużonymi zgodnie z ruchem lodu",
+            "Osadami deponowanymi przez wody roztopowe"
+        ],
+        correctAnswer: "Oszlifowanymi pagórkami skalnymi, wydłużonymi zgodnie z ruchem lodu",
+        explanation: "Wygłady lodowcowe (roche moutonnée, mutony) to formy erozji glacjalnej - pagórki litej skały, które zostały oszlifowane i wygładzone przez przechodzący nad nimi lodowiec.",
+        slideReference: "Strona 9 - Geomorfologia glacjalna"
+    },
+    // === Strona 10: Rzeźba eoliczna ===
+    {
+        question: "Jak nazywa się proces polegający na wywiewaniu przez wiatr drobnego materiału skalnego?",
+        options: [
+            "Korazja",
+            "Deflacja",
+            "Saltacja",
+            "Akumulacja"
+        ],
+        correctAnswer: "Deflacja",
+        explanation: "Deflacja to proces eoliczny polegający na wywiewaniu i usuwaniu luźnego, drobnego materiału (piasku, pyłu) przez wiatr.",
+        slideReference: "Strona 10 - Deflacja"
+    },
+    {
+        question: "Czym są graniaki (wentyfakty)?",
+        options: [
+            "Pagórki powstałe z niewywianego materiału",
+            "Odłamki litej skały oszlifowane przez niesiony wiatrem piasek",
+            "Wydłużone zagłębienia w miękkich skałach",
+            "Charakterystyczne wydmy w kształcie grzyba"
+        ],
+        correctAnswer: "Odłamki litej skały oszlifowane przez niesiony wiatrem piasek",
+        explanation: "Graniaki (wentyfakty) to fragmenty skał, które zostały oszlifowane, a nawet otrzymały ostre krawędzie i płaskie powierzchnie w wyniku korazji, czyli uderzania przez ziarna piasku niesione przez wiatr.",
+        slideReference: "Strona 10 - Korazja"
+    },
+    {
+        question: "Który rodzaj wydm jest typowy dla pustyń piaszczystych w klimacie gorącym i suchym, a ich ramiona są zwrócone zgodnie z kierunkiem wiatru?",
+        options: [
+            "Wydmy paraboliczne",
+            "Barchany",
+            "Wydmy podłużne",
+            "Wydmy gwieździste"
+        ],
+        correctAnswer: "Barchany",
+        explanation: "Barchany to wydmy o charakterystycznym kształcie sierpa, z ramionami skierowanymi w tę samą stronę, w którą wieje wiatr. Są one typowe dla suchych, piaszczystych pustyń z jednokierunkowymi wiatrami.",
+        slideReference: "Strona 10 - Rodzaje wydm"
+    },
+    {
+        question: "Jaka jest różnica między barchanami a wydmami parabolicznymi pod względem orientacji i warunków powstawania?",
+        options: [
+            "Nie ma między nimi różnicy, to synonimy",
+            "Barchany są zwrócone zgodnie z wiatrem i powstają na suchych obszarach, a paraboliczne przeciwnie do wiatru na wilgotniejszych, częściowo utrwalonych przez roślinność",
+            "Barchany są nieruchome, a wydmy paraboliczne wędrują",
+            "Barchany tworzą się przy zmiennych wiatrach, a paraboliczne przy jednokierunkowych"
+        ],
+        correctAnswer: "Barchany są zwrócone zgodnie z wiatrem i powstają na suchych obszarach, a paraboliczne przeciwnie do wiatru na wilgotniejszych, częściowo utrwalonych przez roślinność",
+        explanation: "Tekst wyraźnie rozróżnia te dwa typy wydm. Barchany (ramiona zgodnie z wiatrem) powstają na suchych terenach, a wydmy paraboliczne (ramiona przeciwnie do wiatru) na obszarach wilgotniejszych, gdzie roślinność hamuje ruch ramion.",
+        slideReference: "Strona 10 - Rodzaje wydm"
+    }
+];
+
+
+        const numQuestionsToDisplay = 20;
+        let currentQuizQuestions = [];
+
+        const hardModeCheckbox = document.getElementById('hardModeCheckbox');
+        let isHardMode = false;
+
+        hardModeCheckbox.addEventListener('change', function() {
+            isHardMode = this.checked;
+            buildQuiz();
+        });
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function selectRandomQuestions() {
+            if (allQuizData.length === 0) {
+                console.warn("Pula pytań (allQuizData) jest pusta!");
+                currentQuizQuestions = [];
+                return;
+            }
+            const shuffledAllQuestions = [...allQuizData];
+            shuffleArray(shuffledAllQuestions);
+            currentQuizQuestions = shuffledAllQuestions.slice(0, Math.min(numQuestionsToDisplay, shuffledAllQuestions.length));
+        }
+
+        const quizForm = document.getElementById('quizForm');
+        const resultsDiv = document.getElementById('results');
+
+        function buildQuiz() {
+            quizForm.innerHTML = '';
+            resultsDiv.innerHTML = '';
+            selectRandomQuestions();
+
+            if (currentQuizQuestions.length === 0 && allQuizData.length > 0) {
+                 quizForm.innerHTML = '<p style="text-align:center; color: #777;">Nie udało się wylosować pytań. Sprawdź konsolę lub liczbę pytań w puli.</p>';
+                 return;
+            } else if (allQuizData.length === 0) {
+                 quizForm.innerHTML = '<p style="text-align:center; color: #777;">Brak pytań w bazie. Dodaj pytania do tablicy `allQuizData` w skrypcie.</p>';
+                 return;
+            }
+
+
+            currentQuizQuestions.forEach((currentQuestionData, questionIndex) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.classList.add('question-block');
+                questionBlock.setAttribute('id', `question${questionIndex}`);
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('question-text');
+                questionText.textContent = `${questionIndex + 1}. ${currentQuestionData.question}`;
+                questionBlock.appendChild(questionText);
+
+                if (currentQuestionData.slideReference) {
+                    const slideRefText = document.createElement('span');
+                    slideRefText.classList.add('slide-ref');
+                    slideRefText.textContent = `(Odn. ${currentQuestionData.slideReference})`;
+                    questionBlock.appendChild(slideRefText);
+                }
+
+                const answerOptionsContainer = document.createElement('div');
+                answerOptionsContainer.classList.add('answer-options-container');
+                questionBlock.appendChild(answerOptionsContainer);
+
+                const optionsWrapper = document.createElement('div');
+                optionsWrapper.classList.add('options-wrapper');
+
+                const shuffledOptions = [...currentQuestionData.options];
+                shuffleArray(shuffledOptions);
+
+                shuffledOptions.forEach(option => {
+                    const label = document.createElement('label');
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `question${questionIndex}`;
+                    radio.value = option;
+                    if (isHardMode) {
+                        radio.disabled = true; // Zablokuj radio w trybie trudnym na starcie
+                    }
+                    label.appendChild(radio);
+                    label.appendChild(document.createTextNode(option));
+                    optionsWrapper.appendChild(label);
+                });
+
+                if (isHardMode) {
+                    answerOptionsContainer.classList.add('hard-mode-active');
+
+                    const spoilerInstruction = document.createElement('p');
+                    spoilerInstruction.classList.add('spoiler-instruction');
+                    spoilerInstruction.textContent = 'Kliknij poniżej, aby odkryć odpowiedzi.';
+                    answerOptionsContainer.appendChild(spoilerInstruction);
+
+                    answerOptionsContainer.appendChild(optionsWrapper);
+
+                    optionsWrapper.addEventListener('click', function revealOptions() {
+                        this.classList.add('revealed');
+                        spoilerInstruction.style.display = 'none'; // Ukryj instrukcję
+
+                        const radiosInSpoiler = this.querySelectorAll('input[type="radio"]');
+                        radiosInSpoiler.forEach(r => r.disabled = false); // Odblokuj radio
+                        // Opcjonalnie: focus na pierwszej opcji po odkryciu
+                        // if (radiosInSpoiler.length > 0) {
+                        //     radiosInSpoiler[0].focus();
+                        // }
+                    }, { once: true }); // Listener wykona się tylko raz
+                } else {
+                    answerOptionsContainer.appendChild(optionsWrapper); // W trybie łatwym dodaj bezpośrednio
+                }
+                quizForm.appendChild(questionBlock);
+            });
+        }
+
+        function submitQuiz() {
+            if (currentQuizQuestions.length === 0) {
+                resultsDiv.innerHTML = '<h3>Wyniki:</h3><p>Nie ma pytań do sprawdzenia.</p>';
+                return;
+            }
+            let score = 0;
+            resultsDiv.innerHTML = '<h3>Wyniki:</h3>';
+
+            currentQuizQuestions.forEach((currentQuestionData, questionIndex) => {
+                const questionBlock = document.getElementById(`question${questionIndex}`);
+                // Usuń stary feedback i obramowanie
+                questionBlock.style.borderColor = '#d1d9e6';
+                const prevFeedback = questionBlock.querySelector('.feedback-message');
+                if (prevFeedback) prevFeedback.remove();
+                const prevExplanation = questionBlock.querySelector('.explanation');
+                if (prevExplanation) prevExplanation.remove();
+
+                const radioButtons = quizForm.elements[`question${questionIndex}`];
+                let selectedOptionValue = "";
+
+                // Sprawdzenie czy radioButtons nie jest undefined (co może się zdarzyć jeśli pytanie nie ma opcji)
+                if (radioButtons) {
+                    if (radioButtons.value !== undefined && !radioButtons.length) { // Pojedynczy radio button (rzadkie, ale możliwe)
+                        if (radioButtons.checked) {
+                           selectedOptionValue = radioButtons.value;
+                        }
+                    } else if (radioButtons.length > 0) { // Grupa radio buttonów (NodeList)
+                        for (const radioButton of radioButtons) {
+                            if (radioButton.checked) {
+                                selectedOptionValue = radioButton.value;
+                                break;
+                            }
+                        }
+                    }
+                    // Jeśli radioButtons jest pojedynczym elementem (nie NodeList) i ma .value, a nie jest zaznaczony
+                    // to selectedOptionValue pozostanie "" - co jest poprawne
+                }
+
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.classList.add('feedback-message');
+
+                if (selectedOptionValue === currentQuestionData.correctAnswer) {
+                    score++;
+                    feedbackDiv.textContent = `Poprawna odpowiedź!`;
+                    feedbackDiv.classList.add('correct-answer-feedback');
+                    questionBlock.style.borderColor = '#28a745';
+                } else if (selectedOptionValue) {
+                    feedbackDiv.textContent = `Niepoprawna odpowiedź. Poprawna to: ${currentQuestionData.correctAnswer}.`;
+                    feedbackDiv.classList.add('incorrect-answer-feedback');
+                    questionBlock.style.borderColor = '#dc3545';
+                } else {
+                    feedbackDiv.textContent = `Brak odpowiedzi. Poprawna to: ${currentQuestionData.correctAnswer}.`;
+                    feedbackDiv.classList.add('no-answer-feedback');
+                    questionBlock.style.borderColor = '#ffc107';
+                }
+                questionBlock.appendChild(feedbackDiv); // Dodaj feedback pod opcjami (lub spoilerem)
+
+                if (currentQuestionData.explanation && (selectedOptionValue !== currentQuestionData.correctAnswer || !selectedOptionValue)) {
+                    const explanationText = document.createElement('div');
+                    explanationText.classList.add('explanation');
+                    explanationText.textContent = currentQuestionData.explanation;
+                    questionBlock.appendChild(explanationText);
+                }
+            });
+
+            const overallScore = document.createElement('h4');
+            const percentage = currentQuizQuestions.length > 0 ? ((score / currentQuizQuestions.length) * 100).toFixed(2) : 0;
+            overallScore.textContent = `Twój wynik końcowy: ${score} z ${currentQuizQuestions.length} (${percentage}%)`;
+            resultsDiv.appendChild(overallScore);
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Zbuduj quiz przy pierwszym załadowaniu strony
+        buildQuiz();
+    </script>
+</body>
+</html>
