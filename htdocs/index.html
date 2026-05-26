@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Repulsyjny Szadzi (Zero-Repulsion TIN)</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script> 
+
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #f8f9fa; color: #333; }
+        #map { height: 100vh; width: 100%; cursor: crosshair; }
+        
+        .player-panel {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000;
+            background: rgba(255, 255, 255, 0.95); padding: 15px 25px; border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 20px;
+            border: 1px solid #ccc; min-width: 600px;
+        }
+
+        .date-display { font-size: 22px; font-weight: bold; color: #0277bd; min-width: 140px; text-align: center; }
+        .play-btn {
+            background: #0277bd; color: #fff; border: none; border-radius: 4px;
+            width: 45px; height: 45px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .play-btn:hover { background: #01579b; }
+
+        .slider-container { flex-grow: 1; display: flex; flex-direction: column; }
+        input[type="range"] { width: 100%; cursor: pointer; accent-color: #0277bd; }
+
+        .loading-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #f8f9fa; z-index: 9999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+        
+        .legend {
+            position: absolute; top: 20px; right: 20px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 8px;
+            border: 1px solid #ccc; color: #222; font-size: 13px; width: 170px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .legend-row { display: flex; align-items: center; margin-bottom: 6px; }
+        .legend-color { width: 20px; height: 14px; margin-right: 10px; border: 1px solid #000; }
+    </style>
+</head>
+<body>
+
+    <div id="loading" class="loading-screen">
+        <h2 id="loadingText" style="color: #0277bd;">Inicjalizacja środowiska numerycznego...</h2>
+        <p style="color: #666; font-size: 14px;" id="loadingSub">Budowa nieliniowej siatki z repulsją zera (Zero-Repulsion Spline).</p>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="legend">
+        <h4 style="margin: 0 0 10px 0; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Szadź - Izolinie (mm)</h4>
+        <div class="legend-row"><div class="legend-color" style="background: rgba(140, 0, 38, 0.7);"></div> > 30.0 (Ekstremalna)</div>
+        <div class="legend-row"><div class="legend-color" style="background: rgba(227, 26, 28, 0.7);"></div> > 15.0</div>
+        <div class="legend-row"><div class="legend-color" style="background: rgba(253, 141, 60, 0.7);"></div> > 5.0</div>
+        <div class="legend-row"><div class="legend-color" style="background: rgba(254, 204, 92, 0.7);"></div> > 2.0</div>
+        <div class="legend-row"><div class="legend-color" style="background: rgba(161, 218, 180, 0.7);"></div> > 0.5</div>
+        <div class="legend-row"><div class="legend-color" style="background: rgba(65, 182, 196, 0.5);"></div> > 0.1 (Śladowa)</div>
+    </div>
+
+    <div class="player-panel">
+        <button id="playPauseBtn" class="play-btn">▶</button>
+        <div class="date-display" id="dateDisplay">--/--/----</div>
+        <div class="slider-container">
+            <input type="range" id="timeSlider" min="0" max="100" value="0" step="0.01">
+            <div style="display:flex; justify-content:space-between; font-size: 11px; color:#555; margin-top: 5px;">
+                <span id="startDateLabel">Start</span>
+                <span id="endDateLabel">Koniec</span>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; margin-left: 10px;">
+            <label style="font-size: 10px; color: #555; font-weight:bold;">Szybkość</label>
+            <input type="range" id="speedSlider" min="0.5" max="10" value="3" step="0.5" style="width: 70px;">
+        </div>
+    </div>
+
+    <script>
+        const map = L.map('map', { zoomControl: false }).setView([52.2, 19.1], 6);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        let dataByDate = {}; 
+        let sortedDates = [];
+        let stationsArray = []; 
+        let isPlaying = false;
+        let animationProgress = 0;
+        let lastTimestamp = 0;
+        let animationFrameReq;
+
+        const isolineLevels = [
+            { t: 0.1, fill: 'rgba(65, 182, 196, 0.5)' },
+            { t: 0.5, fill: 'rgba(161, 218, 180, 0.7)' },
+            { t: 2.0, fill: 'rgba(254, 204, 92, 0.7)' },
+            { t: 5.0, fill: 'rgba(253, 141, 60, 0.7)' },
+            { t: 15.0, fill: 'rgba(227, 26, 28, 0.7)' },
+            { t: 30.0, fill: 'rgba(140, 0, 38, 0.7)' }
+        ];
+        const thresholds = isolineLevels.map(l => l.t);
+
+        const lngMin = 13.5, lngMax = 24.5, latMin = 48.5, latMax = 55.5;
+        const gridCols = 160, gridRows = 120;
+        const gridData = new Float32Array(gridCols * gridRows);
+        const cellWeights = [];
+
+        L.ContourLayer = L.Layer.extend({
+            onAdd: function (map) {
+                this._map = map;
+                this._canvas = L.DomUtil.create('canvas', 'leaflet-contour-layer');
+                this._canvas.style.position = 'absolute';
+                this._canvas.style.pointerEvents = 'none';
+                map.getPanes().overlayPane.appendChild(this._canvas);
+                map.on('move', this._reset, this);
+                this._reset();
+            },
+            onRemove: function (map) {
+                L.DomUtil.remove(this._canvas);
+                map.off('move', this._reset, this);
+            },
+            _reset: function () {
+                const size = this._map.getSize();
+                const topLeft = this._map.containerPointToLayerPoint([0, 0]);
+                L.DomUtil.setPosition(this._canvas, topLeft);
+                this._canvas.width = size.x;
+                this._canvas.height = size.y;
+                this.redraw();
+            },
+            redraw: function () {
+                if (!this._canvas || stationsArray.length === 0 || cellWeights.length === 0) return;
+                const ctx = this._canvas.getContext('2d');
+                const size = this._map.getSize();
+                ctx.clearRect(0, 0, size.x, size.y);
+
+                // --- 1. OBLICZANIE WARTOŚCI SIATKI (Nieliniowa z Odpychaniem Zera) ---
+                for (let i = 0; i < gridData.length; i++) {
+                    const cell = cellWeights[i];
+                    if (!cell) {
+                        gridData[i] = 0; // Poza stacjami twarde 0 (nie wymyślamy)
+                        continue;
+                    }
+                    
+                    const valA = stationsArray[cell.iA].val;
+                    const valB = stationsArray[cell.iB].val;
+                    const valC = stationsArray[cell.iC].val;
+                    
+                    // Potęgowanie tworzy płaskie wyże i płaskie niże, ucinając łagodne spadki
+                    const power = 2.5;
+                    let wA = Math.pow(cell.l1, power);
+                    let wB = Math.pow(cell.l2, power);
+                    let wC = Math.pow(cell.l3, power);
+                    
+                    // MAGIA REPULSJI ZERA (Context-Aware Zero Repulsion)
+                    // Jeśli stacja ma 0 (lub jest blisko 0), jej waga rośnie nawet 5-krotnie!
+                    // To sprawia, że ZERA zgniatają wartości napierające od sąsiadów.
+                    // Zjawisko w górach zostanie obrysowane zwartym, ciasnym kółkiem.
+                    wA *= (1.0 + Math.max(0, 2.0 - valA) * 2.0);
+                    wB *= (1.0 + Math.max(0, 2.0 - valB) * 2.0);
+                    wC *= (1.0 + Math.max(0, 2.0 - valC) * 2.0);
+                    
+                    const wSum = wA + wB + wC;
+                    gridData[i] = wSum > 0 ? ((wA * valA + wB * valB + wC * valC) / wSum) : 0;
+                }
+
+                // --- 2. GENEROWANIE IZOLINII D3 ---
+                const contours = d3.contours().size([gridCols, gridRows]).thresholds(thresholds)(gridData);
+
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+
+                contours.forEach((contour, idx) => {
+                    if (contour.coordinates.length === 0) return;
+                    const style = isolineLevels[idx];
+
+                    ctx.beginPath();
+                    contour.coordinates.forEach(polygon => {
+                        polygon.forEach(ring => {
+                            for (let i = 0; i < ring.length; i++) {
+                                const [gx, gy] = ring[i];
+                                const pLng = lngMin + (gx / (gridCols - 1)) * (lngMax - lngMin);
+                                const pLat = latMax - (gy / (gridRows - 1)) * (latMax - latMin);
+                                const pt = this._map.latLngToContainerPoint([pLat, pLng]);
+                                if (i === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y);
+                            }
+                            ctx.closePath();
+                        });
+                    });
+
+                    ctx.fillStyle = style.fill;
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(15,15,15,0.9)';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                });
+
+                // --- 3. RYSOWANIE KROPEK STACJI (Zawsze prawdziwych) ---
+                for (let i = 0; i < stationsArray.length; i++) {
+                    const st = stationsArray[i];
+                    const pt = this._map.latLngToContainerPoint([st.lat, st.lng]);
+                    
+                    if (pt.x > -10 && pt.x < size.x + 10 && pt.y > -10 && pt.y < size.y + 10) {
+                        ctx.beginPath();
+                        if (st.val > 0.1) {
+                            ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+                            ctx.fillStyle = '#ff1744'; // Mocny czerwony na stacjach szadziowych
+                            ctx.fill();
+                            ctx.strokeStyle = '#000';
+                            ctx.lineWidth = 1.5;
+                            ctx.stroke();
+                        } else {
+                            ctx.arc(pt.x, pt.y, 2.5, 0, Math.PI * 2);
+                            ctx.fillStyle = 'rgba(120, 120, 120, 0.4)'; // Bardzo dyskretne szare 0
+                            ctx.fill();
+                        }
+                    }
+                }
+            }
+        });
+
+        const contourLayer = new L.ContourLayer().addTo(map);
+
+        // --- BUDOWANIE SIATKI TRÓJKĄTÓW (TIN) DLA METODY BARYCENTRYCZNEJ ---
+        function buildGridWeights() {
+            document.getElementById('loadingSub').innerText = "Triangulacja przestrzenna (Delaunay)...";
+            
+            const points = stationsArray.map(st => [st.lng, st.lat]);
+            const delaunay = d3.Delaunay.from(points);
+            const triangles = delaunay.triangles; 
+
+            for (let y = 0; y < gridRows; y++) {
+                const lat = latMax - (y / (gridRows - 1)) * (latMax - latMin);
+                for (let x = 0; x < gridCols; x++) {
+                    const lng = lngMin + (x / (gridCols - 1)) * (lngMax - lngMin);
+                    let found = false;
+
+                    for (let t = 0; t < triangles.length; t += 3) {
+                        const iA = triangles[t];
+                        const iB = triangles[t+1];
+                        const iC = triangles[t+2];
+                        
+                        const stA = stationsArray[iA];
+                        const stB = stationsArray[iB];
+                        const stC = stationsArray[iC];
+                        
+                        const den = (stB.lat - stC.lat) * (stA.lng - stC.lng) + (stC.lng - stB.lng) * (stA.lat - stC.lat);
+                        if (Math.abs(den) < 1e-6) continue;
+                        
+                        // Współrzędne barycentryczne
+                        const l1 = ((stB.lat - stC.lat) * (lng - stC.lng) + (stC.lng - stB.lng) * (lat - stC.lat)) / den;
+                        const l2 = ((stC.lat - stA.lat) * (lng - stC.lng) + (stA.lng - stC.lng) * (lat - stC.lat)) / den;
+                        const l3 = 1 - l1 - l2;
+                        
+                        if (l1 >= -1e-4 && l2 >= -1e-4 && l3 >= -1e-4) {
+                            cellWeights.push({
+                                iA: iA, iB: iB, iC: iC,
+                                l1: Math.max(0, l1),
+                                l2: Math.max(0, l2),
+                                l3: Math.max(0, l3)
+                            });
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) cellWeights.push(null);
+                }
+            }
+        }
+
+        function updateFrame(progress) {
+            const totalDays = sortedDates.length;
+            if (totalDays === 0) return;
+
+            let idx1 = Math.floor(progress);
+            let idx2 = idx1 + 1;
+            if (idx2 >= totalDays) idx2 = idx1; 
+            
+            const fraction = progress - idx1; 
+            const date1 = sortedDates[idx1];
+            const date2 = sortedDates[idx2];
+            
+            document.getElementById('dateDisplay').innerText = date1;
+            document.getElementById('timeSlider').value = progress;
+            
+            for(let i = 0; i < stationsArray.length; i++) {
+                const st = stationsArray[i];
+                const val1 = (dataByDate[date1] && dataByDate[date1][st.id]) || 0;
+                const val2 = (dataByDate[date2] && dataByDate[date2][st.id]) || 0;
+                st.val = val1 + (val2 - val1) * fraction;
+            }
+            contourLayer.redraw();
+        }
+
+        function renderLoop(timestamp) {
+            if (!isPlaying) {
+                lastTimestamp = timestamp;
+                animationFrameReq = requestAnimationFrame(renderLoop);
+                return;
+            }
+            const dt = timestamp - lastTimestamp;
+            lastTimestamp = timestamp;
+            
+            const daysPerSecond = parseFloat(document.getElementById('speedSlider').value);
+            animationProgress += (dt / 1000) * daysPerSecond; 
+            
+            if (animationProgress >= sortedDates.length - 1) animationProgress = 0;
+            
+            updateFrame(animationProgress);
+            animationFrameReq = requestAnimationFrame(renderLoop);
+        }
+
+        const cleanHeader = (h) => h.replace(/[^A-Z0-9]/ig, '').toUpperCase();
+
+        async function loadData() {
+            try {
+                let coordLookup = {};
+                const resStacje = await fetch('stacje.csv').then(r => r.text());
+                Papa.parse(resStacje, {
+                    header: true, skipEmptyLines: true, transformHeader: cleanHeader,
+                    complete: function(results) {
+                        results.data.forEach(row => {
+                            const id = String(row.ID || "").trim();
+                            if (id) {
+                                coordLookup[id] = {
+                                    lat: parseFloat(String(row.Y).replace(',', '.')), 
+                                    lng: parseFloat(String(row.X).replace(',', '.'))
+                                };
+                            }
+                        });
+                    }
+                });
+
+                let activeStationIds = new Set();
+                let stationNamesFromData = {};
+
+                const resDane = await fetch('dane.csv').then(r => r.text());
+                Papa.parse(resDane, {
+                    header: true, skipEmptyLines: true, transformHeader: cleanHeader,
+                    complete: function(results) {
+                        results.data.forEach(row => {
+                            let rok = row.ROK, mc = String(row.MC).padStart(2, '0'), dz = String(row.DZ).padStart(2, '0');
+                            if (!rok || !mc || !dz) return;
+                            
+                            let dateStr = `${rok}-${mc}-${dz}`;
+                            let id = String(row.NSP).trim();
+                            let val = parseFloat(String(row.SADZ).replace(',', '.'));
+                            
+                            if (id) activeStationIds.add(id);
+                            if (row.POST) stationNamesFromData[id] = row.POST;
+
+                            if (!isNaN(val) && val > 0) {
+                                if (!dataByDate[dateStr]) dataByDate[dateStr] = {};
+                                dataByDate[dateStr][id] = val;
+                            }
+                        });
+
+                        sortedDates = Object.keys(dataByDate).sort();
+                        
+                        activeStationIds.forEach(id => {
+                            let coords = coordLookup[id];
+                            if (coords && !isNaN(coords.lat) && !isNaN(coords.lng)) {
+                                stationsArray.push({
+                                    id: id,
+                                    lat: coords.lat,
+                                    lng: coords.lng,
+                                    name: stationNamesFromData[id] || "Stacja: " + id,
+                                    val: 0 
+                                });
+                            }
+                        });
+
+                        setTimeout(() => {
+                            buildGridWeights(); 
+                            document.getElementById('loading').style.display = 'none';
+                            initPlayer();
+                        }, 100);
+                    }
+                });
+            } catch (err) {
+                document.getElementById('loadingText').innerText = "Wystąpił błąd wczytywania plików CSV!";
+            }
+        }
+
+        // KLIKANIE W KROPKI STACJI
+        let currentPopup = L.popup();
+        map.on('click', function(e) {
+            let closestId = null;
+            let minDistance = 15; 
+            
+            for (let i = 0; i < stationsArray.length; i++) {
+                const st = stationsArray[i];
+                const stPt = map.latLngToContainerPoint([st.lat, st.lng]);
+                const dist = Math.sqrt(Math.pow(stPt.x - e.containerPoint.x, 2) + Math.pow(stPt.y - e.containerPoint.y, 2));
+                
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    closestId = i;
+                }
+            }
+
+            if (closestId !== null) {
+                const st = stationsArray[closestId];
+                currentPopup
+                    .setLatLng([st.lat, st.lng])
+                    .setContent(`
+                        <div style="text-align: center; font-size: 14px; min-width: 120px;">
+                            <strong style="color: #0277bd;">${st.name}</strong><br>
+                            <hr style="margin: 8px 0; border: 0; border-top: 1px solid #ccc;">
+                            Szadź pomierzona:<br>
+                            <strong style="color: #d32f2f; font-size: 18px;">${st.val.toFixed(1)} mm</strong>
+                        </div>
+                    `)
+                    .openOn(map);
+            }
+        });
+
+        function initPlayer() {
+            const slider = document.getElementById('timeSlider');
+            slider.max = sortedDates.length - 1;
+            document.getElementById('startDateLabel').innerText = sortedDates[0];
+            document.getElementById('endDateLabel').innerText = sortedDates[sortedDates.length - 1];
+
+            document.getElementById('playPauseBtn').addEventListener('click', (e) => {
+                isPlaying = !isPlaying;
+                e.target.innerText = isPlaying ? "⏸" : "▶";
+            });
+
+            slider.addEventListener('input', (e) => {
+                isPlaying = false;
+                document.getElementById('playPauseBtn').innerText = "▶";
+                animationProgress = parseFloat(e.target.value);
+                updateFrame(animationProgress);
+                map.closePopup();
+            });
+
+            updateFrame(0);
+            animationFrameReq = requestAnimationFrame(renderLoop);
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
